@@ -71,7 +71,7 @@
                         <td>{{ $store->pallet_unique_id }}</td>
                         <td><div class="col-md-6">
                                 <select class="form-select" name="store_sub_brand[]" aria-label="Default select example">
-                                    <option value="">Select Sub brand-</option>
+                                    <option value="">N/A</option>
                                     <option value="golf puma">Golf puma</option>
                                     <option value="tretorn puma">Tretorn puma</option>
                                 </select>
@@ -82,6 +82,11 @@
                     </tr>
                     <input type="hidden" name="store_ids[]" id="store_ids" value="{{ $store->id }}">
                 @endforeach 
+                @if ($stores->isEmpty())
+                <tr>
+                    <td colspan="7" class="text-center">No record Found</td>
+                </tr>
+                @endif
             </tbody>
         </table>
         {{-- {{ $stores->links() }} <!-- Pagination links --> --}}
@@ -111,7 +116,7 @@
         <div class="p-4">
             <div class="row justify-content-between">
                 <div class="col-auto">
-                    <a href="#" class="btn btn-secondary me-2">Back</a>
+                    <a href="{{ route('admin.stores.create') }}"  class="btn btn-secondary me-2">Back</a>
                     {{-- <button type="button" onclick="window.location='{{ route('brands.create') }}'" class="btn btn-secondary me-2">Back</button> --}}
                 </div>
                 <div class="col-auto">
@@ -131,8 +136,10 @@
         $(document).ready(function() {
             $('#dataTable').DataTable();
         });
+       
     </script>
 @endpush
+
 <style>
 .pagination {
     display: flex;

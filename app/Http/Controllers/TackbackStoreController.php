@@ -5,6 +5,7 @@ use App\Models\Brand;
 use App\Models\TackbackStore;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Carbon\Carbon;
 use Session;
 
 use Illuminate\Http\Request;
@@ -39,6 +40,7 @@ class TackbackStoreController extends Controller
             'type' => $request->type,
             'quantity' => $request->quantity,   
             'total_weight' => $request->total_weight,
+            'created_store_date_time' => Carbon::now(),
         ]);
             $uniqueIDs[] = $uniqueID;
         }
@@ -58,15 +60,30 @@ class TackbackStoreController extends Controller
        
          // Determine the number of items per page (adjust as needed)
         $perPage = 5;
-        $stores = TackbackStore::orderByDesc('id')->limit($quantity)->get()->reverse();
+        // $stores = TackbackStore::orderByDesc('id')->limit($quantity)->get()->reverse();
 
         // $stores = TackbackStore::orderByDesc('id')->paginate($perPage);
+    //     $stores = TackbackStore::orderByDesc('id')
+    // ->take($quantity)
+    // ->paginate($perPage);
+
+    // $quantity = 10; // Or any other value you prefer
+    // $perPage = 5; // Or any other value you prefer
+
+    // Query to retrieve the latest $quantity records and reverse them
+    $stores = TackbackStore::latest()->take($quantity)->get()->reverse();
+
+    // $stores = TackbackStore::latest()->take($quantity)->paginate($perPage);
+
+        
 
         // Paginate the fetched records
         // $stores = TackbackStore::orderByDesc('id')->paginate(10);
 
         // $stores = TackbackStore::orderByDesc('id')->limit($quantity)->paginate(10);
-        $latestStoreDetail = TackbackStore::with('brand')->first();
+        $latestStoreDetail = TackbackStore::orderByDesc('id')->with('brand')->first();
+
+        // print_r($latestStoreDetail); die();
         
         // Return a view and pass the fetched brands to it
         return view('admin.stores.index', ['stores' => $stores, 'latestStoreDetail' => $latestStoreDetail]);
@@ -79,7 +96,7 @@ class TackbackStoreController extends Controller
             $store->pallet_weight = $request->pallet_weight[$key];
             $store->save();
         }
-        echo "good";
+        // echo "good";
         return redirect()->route('admin.stores.saveList');
         // echo $request->store_sub_brand;
     }
@@ -91,19 +108,15 @@ class TackbackStoreController extends Controller
        
          // Determine the number of items per page (adjust as needed)
         $perPage = 5;
-        $stores = TackbackStore::orderByDesc('id')->get()->reverse();
-        // $query = TackbackStore::orderByDesc('id')->limit($quantity)->get()->reverse();
+        // $stores = TackbackStore::orderByDesc('id')->get()->reverse();
 
-        // $stores = TackbackStore::orderByDesc('id')->paginate($perPage);
+        $stores = TackbackStore::orderByDesc('id')->paginate($perPage);
 
-        // Paginate the fetched records
-        // $stores = TackbackStore::orderByDesc('id')->paginate(10);
-
-        // $stores = TackbackStore::orderByDesc('id')->limit($quantity)->paginate(10);
         $latestStoreDetail = TackbackStore::with('brand')->first();
-        // echo $stores; die();
+        $brands = Brand::all();  
         // Return a view and pass the fetched brands to it
-        return view('admin.stores.tackbackStoreListSave', ['stores' => $stores, 'latestStoreDetail' => $latestStoreDetail]);
+        return view('admin.stores.tackbackStoreListSave', ['stores' => $stores, 'latestStoreDetail' => $latestStoreDetail, 
+        'brands' =>$brands]);
     }
     public function cancelForm(){
         // Clear session data
@@ -115,5 +128,29 @@ class TackbackStoreController extends Controller
         
         return view('admin.stores.create', ['brands' => $brands]);
         
+    }
+    public function filterBrands(Request $request){
+        $brandId = $request->input('brand_id');
+         $brands = Brand::all();  
+        // Fetch data based on the brand ID
+        $stores = TackbackStore::where('brand_id', $brandId)->get();
+        if (empty($brandId)) {
+            $stores = TackbackStore::all();
+        }
+        return response()->json($stores);
+    }
+
+    public function searchStore(Request $request){
+        $query = $request->input('query');
+        if(!empty($query)) { 
+            $results = TackbackStore::query()
+        // ->where('name', 'like', "%{$query}%")
+        ->Where('trackback_product_store_type', 'like', "%{$query}%")
+        ->orWhere('shipment_id', 'like', "%{$query}%")
+        ->get();
+        } else {
+            $results = TackbackStore::all();
+        }
+        return response()->json($results);
     }
 }

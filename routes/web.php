@@ -51,3 +51,7 @@ Route::get('/admin/tackback-store/detail', [TackbackStoreController::class, 'ind
 Route::get('/admin/tackback-store/save-list', [TackbackStoreController::class, 'tackbackStoreSaveList'])->name('admin.stores.saveList');
 
 Route::get('/admin/tackback-store/clear', [TackbackStoreController::class, 'cancelForm'])->name('tackback.stores.cancel');
+
+Route::get('/admin/tackback-store/brands', [TackbackStoreController::class, 'filterBrands'])->name('admin.stores.brand-filter');
+
+Route::get('/admin/tackback-store/search', [TackbackStoreController::class, 'searchStore'])->name('admin.stores.search-store');
