@@ -152,5 +152,17 @@ class TackbackStoreController extends Controller
             $results = TackbackStore::all();
         }
         return response()->json($results);
+            // Return the paginated search results and pagination links
+        // return response()->json([
+        //     'results' => $results->items(), // Send only the items
+        //     'links' => $results->links()->toHtml() // Convert the pagination links to HTML
+        // ]);
+    }
+    public function shipmentDetail(){
+         return view('admin.stores.tackbackStoreShipment');
+    }
+
+    public function palletDetail(){
+        return view('admin.stores.tackbackStorePallet');
     }
 }

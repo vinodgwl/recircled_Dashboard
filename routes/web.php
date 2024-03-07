@@ -55,3 +55,7 @@ Route::get('/admin/tackback-store/clear', [TackbackStoreController::class, 'canc
 Route::get('/admin/tackback-store/brands', [TackbackStoreController::class, 'filterBrands'])->name('admin.stores.brand-filter');
 
 Route::get('/admin/tackback-store/search', [TackbackStoreController::class, 'searchStore'])->name('admin.stores.search-store');
+
+Route::get('/admin/tackback-store/shipment-detail', [TackbackStoreController::class, 'shipmentDetail'])->name('admin.stores.shipment-detail');
+
+Route::get('/admin/tackback-store/pallet-detail', [TackbackStoreController::class, 'palletDetail'])->name('admin.stores.pallet-detail');

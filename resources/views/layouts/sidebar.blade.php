@@ -3,6 +3,7 @@
             background-color: #343a40; /* Sidebar background color */
             color: #fff; /* Text color */
             height: 100%;
+            min-height: 640px;
         }
 
         .sidebar .nav-link {

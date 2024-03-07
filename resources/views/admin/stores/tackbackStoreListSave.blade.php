@@ -79,41 +79,14 @@
         {{-- <div class="pagination justify-content-center">
             {{ $stores->links() }}
         </div> --}}
-         <div class="pagination d-flex justify-content-center">
+         <div id="defaultPagination" class="pagination d-flex justify-content-center">
             {{ $stores->links('pagination::bootstrap-4') }}
         </div>
 
-       {{-- <div class="p-2">
-            <div class="row justify-content-between">
-                @if ($stores->hasPages())
-                <nav aria-label="Page navigation">
-                    <ul class="pagination justify-content-center">
-                        <li class="page-item {{ $stores->onFirstPage() ? 'disabled' : '' }}">
-                            <a class="page-link" href="{{ $stores->previousPageUrl() }}" aria-label="Previous">&laquo;</a>
-                        </li>
-
-                        {!! $stores->render() !!} <!-- Render the pagination links -->
-
-                        <li class="page-item {{ !$stores->hasMorePages() ? 'disabled' : '' }}">
-                            <a class="page-link" href="{{ $stores->nextPageUrl() }}" aria-label="Next">&raquo;</a>
-                        </li>
-                    </ul>
-                </nav>
-                @endif
-             </div>
+        {{-- <div class="pagination d-flex justify-content-center" id="paginationLinks">
+            <!-- Pagination links will be dynamically updated here -->
         </div> --}}
-        {{-- <div class="p-4">
-            <div class="row justify-content-between">
-                <div class="col-auto">
-                    <button type="button" class="btn btn-secondary me-2">Back</button>
-                </div>
-                <div class="col-auto">
-                    <button type="button" class="btn btn-secondary me-2">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save index list</button>
-                    <button type="button" class="btn btn-primary">Save & Open</button>
-                </div>
-             </div>
-        </div> --}}
+        
          </form>
     </div>
 @endsection
@@ -165,7 +138,6 @@
         // Function to perform AJAX search request
         function search() {
             var query = $('#searchQuery1').val();
-            alert(query);
             if(!query){
                 query = 0;
             }
@@ -205,6 +177,8 @@
                             '</tr>';
                         $('#dataTable tbody').append(row);
                     });
+                    // Add pagination links if available
+                    // $('#paginationLinks').html(data.links);
                 } else {
                     var newRow =    `<tr>
                         <td colspan="7" class="text-center">No record Found</td>
@@ -215,13 +189,9 @@
         }
         $(document).ready(function() {
             $('#searchQuery1').on('input', function() {
-                // This function will be called whenever the input value changes
-                // alert('Input value changed');
                 search();
             });
         });
-        
-
         </script>
 @endpush
 <style>
