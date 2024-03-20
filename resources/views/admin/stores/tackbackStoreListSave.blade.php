@@ -62,9 +62,30 @@
                         <td>{{ $store->shipment_id }}</td>
                         <td>{{ \Carbon\Carbon::parse($store->created_store_date_time)->format('d/m/y h:i:s A') }}</td>
                         <td>{{ $store->trackback_product_store_type }}</td>
-                         <td>{{$store->pallet_weight}}</td>
-                         <td>--</td>
-                         <td>--</td>
+                         <td>{{$store->total_weight}}</td>
+                         <td>{{$store->status_1_count}}/ {{$store->quantity}}</td>
+                         {{-- <td>{{ $store->status_1_count + $store->status_0_count }} ({{$store->status_1_count}}/{{ $store->status_1_count + $store->status_0_count }})</td> --}}
+                       {{-- <td style="color: {{ $store->status == 0 ? 'red' : 'black' }}">
+                            @if ($store->status == 0)
+                              
+                                    Unopened <i class="bi bi-chevron-right status-icons"></i>
+                            @else
+                                    Opened <i class="bi bi-chevron-right status-icons"></i>
+                            @endif
+                        </td> --}}
+                        <td style="color: {{ $store->status == 0 ? 'red' : 'black' }}" class="status-icons">
+                            @if ($store->status == 0)
+                            Unopened
+                                <a href="{{ route('admin.stores.shipment-detail', ['id' => $store->id]) }}">
+                                    <i class="bi bi-chevron-right status-icons"></i>
+                                </a>
+                            @else
+                            Opened
+                                <a href="{{ route('admin.stores.shipment-detail', ['id' => $store->id]) }}">
+                                     <i class="bi bi-chevron-right status-icons"></i>
+                                </a>
+                            @endif
+                        </td>
                     </tr>
                     <input type="hidden" name="store_ids[]" id="store_ids" value="{{ $store->id }}">
                 @endforeach 
@@ -79,10 +100,27 @@
         {{-- <div class="pagination justify-content-center">
             {{ $stores->links() }}
         </div> --}}
-         <div id="defaultPagination" class="pagination d-flex justify-content-center">
+         {{-- <div id="defaultPagination" class="pagination d-flex justify-content-center">
             {{ $stores->links('pagination::bootstrap-4') }}
+            <span class="justify-content-end" id="paginationInfo" class="ms-3">
+                Showing {{ $stores->firstItem() }} - {{ $stores->lastItem() }} of {{ $stores->total() }}
+            </span>
+        </div> --}}
+        <div  class="pagination-container d-flex justify-content-between align-items-center">
+        <div></div>
+            <div  style="
+            justify-content: center;
+        "id="defaultPagination" class="pagination">
+                {{ $stores->links('pagination::bootstrap-4') }}
+            </div>
+            <div style="flex-direction: end;align-items: end;display: flex;">
+                <span id="paginationInfo" class="ms-3">
+                Showing {{ $stores->firstItem() }} - {{ $stores->lastItem() }} of {{ $stores->total() }}
+            </span>
+            </div>
         </div>
 
+        
         {{-- <div class="pagination d-flex justify-content-center" id="paginationLinks">
             <!-- Pagination links will be dynamically updated here -->
         </div> --}}
@@ -111,7 +149,7 @@
                                 '<td>' + data.shipment_id + '</td>' +
                                 '<td>' + data.created_store_date_time + '</td>' +
                                 '<td>' + data.trackback_product_store_type + '</td>' +
-                                '<td>' + data.pallet_weight + '</td>' +
+                                '<td>' + data.total_weight + '</td>' +
                                 '<td>' + '--' +'</td>' +
                                 '<td>' + '--' + '</td>' +
                                 // Add more table data as needed
@@ -171,7 +209,7 @@
                             '<td>' + item.shipment_id + '</td>' +
                             '<td>' + item.created_store_date_time + '</td>' +
                             '<td>' + item.trackback_product_store_type + '</td>' +
-                            '<td>' + item.pallet_weight + '</td>' +
+                            '<td>' + item.total_weight + '</td>' +
                             '<td>--</td>' +
                             '<td>--</td>' +
                             '</tr>';
@@ -251,7 +289,12 @@
 .search-products fieldset input {
     /* padding-left: 100px */
 } 
-
+.status-icons {
+    background-color: #E8E8E8; 
+    padding: 2px; 
+    color: #000000;
+    margin-left: 35px;
+}
 /* .product-table-main-list {
     padding: 20px;
 }

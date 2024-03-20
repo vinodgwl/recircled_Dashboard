@@ -35,6 +35,7 @@ Route::post('/admin/tackback-product/save', [AdminController::class, 'store'])->
 
 Route::post('/admin/tackback-product/update', [TackbackStoreController::class, 'updateStores'])->name('trackbackProduct.update.stores');
 
+Route::post('/admin/tackback-product-save-and-open/update', [TackbackStoreController::class, 'updateSaveAndOpenStores'])->name('trackbackProductSaveAndOpen.update.stores');
 
 Route::get('admin/newdashboard', function () {
     echo "hello";
@@ -59,3 +60,9 @@ Route::get('/admin/tackback-store/search', [TackbackStoreController::class, 'sea
 Route::get('/admin/tackback-store/shipment-detail', [TackbackStoreController::class, 'shipmentDetail'])->name('admin.stores.shipment-detail');
 
 Route::get('/admin/tackback-store/pallet-detail', [TackbackStoreController::class, 'palletDetail'])->name('admin.stores.pallet-detail');
+
+Route::post('/admin/tackback-store/create-boxes', [TackbackStoreController::class, 'createBoxes'])->name('tackbackStore.box.creates');
+
+Route::get('/admin/tackback-store/pallet-boxes-detail', [TackbackStoreController::class, 'palletBoxesDetail'])->name('tackbackStore.box.palllet-detail');
+
+Route::post('/admin/tackback-store/save-new-boxes', [TackbackStoreController::class, 'saveNewBoxes'])->name('tackbackStore.box.save');

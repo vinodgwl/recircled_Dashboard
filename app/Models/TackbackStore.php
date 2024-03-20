@@ -19,13 +19,8 @@ class TackbackStore extends Model
         'type',
         'quantity',
         'total_weight',
-        'pallet_unique_id',
         'created_store_date_time',
-        'store_sub_brand',
-        'pallet_weight',
-    ];
-     protected $casts = [                
-        'pallet_unique_id' => 'array',
+        'status',
     ];
 
     public function brand()

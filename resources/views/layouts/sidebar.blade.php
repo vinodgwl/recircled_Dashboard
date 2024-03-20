@@ -4,6 +4,7 @@
             color: #fff; /* Text color */
             height: 100%;
             min-height: 640px;
+            min-width: 245px;
         }
 
         .sidebar .nav-link {

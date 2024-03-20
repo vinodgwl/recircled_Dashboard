@@ -22,12 +22,11 @@ return new class extends Migration
             $table->string('shipping_carrier_name', 200)->nullable();
             $table->string('type', 200)->nullable();
             $table->integer('quantity')->default(0);
-            $table->string('total_weight', 100)->nullable();
-            $table->string('pallet_unique_id')->unique();
-            $table->timestamp('created_store_date_time')->nullable()->default(now());
-            $table->string('store_sub_brand', 200)->nullable();
-            $table->string('pallet_weight', 100)->nullable();
+            $table->string('total_weight', 150)->nullable();
+            $table->timestamp('created_store_date_time')->nullable()->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->boolean('status')->default(false);
             $table->timestamps();
+
         });
     }
 
