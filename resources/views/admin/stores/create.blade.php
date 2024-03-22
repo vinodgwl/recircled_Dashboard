@@ -113,8 +113,8 @@
                                 <label for="exampleFormControlInput1" class="form-label">Type (pallet/Box)</label>
                                 <select class="form-select" name="type" aria-label="Default select example">
                                 <option value=""selected>Select</option>
-                                    <option value="pallet" {{ isset($prevois_store_data['type']) && $prevois_store_data['type'] === 'pallet' ? 'selected' : '' }}>Pallet</option>
-                                    <option value="box" {{ isset($prevois_store_data['type']) && $prevois_store_data['type'] === 'box' ? 'selected' : '' }}>Box</option>
+                                    <option value="pallet" {{ old('type', $prevois_store_data['type'] ?? '') == 'pallet' ? 'selected' : '' }}>Pallet</option>
+                                    <option value="box" {{ old('type', $prevois_store_data['type'] ?? '') == 'box' ? 'selected' : '' }}>Box</option>
                                 </select>
                                 @error('type')
                                     <span class="alert text-danger error-required-msg">{{ $message }}</span>
@@ -122,14 +122,14 @@
                             </div>
                             <div class="col-md-2">
                                 <label for="exampleFormControlInput1"  class="form-label">Quantity</label>
-                                <input type="text" class="form-control" placeholder="Quantity" value="{{ $prevois_store_data['quantity'] ?? '' }}"  name="quantity" id="exampleFormControlInput1">
+                                <input type="text" class="form-control" placeholder="Quantity" value="{{ old('quantity', $prevois_store_data['quantity'] ?? '') }}"  name="quantity" id="exampleFormControlInput1">
                                  @error('quantity')
                                 <span class="alert text-danger error-required-msg">{{ $message }}</span>
                                 @enderror
                             </div>
                             <div class="col-md-2">
                                 <label for="exampleFormControlInput1"  class="form-label">Total Weight(lbs)</label>
-                                <input type="text" class="form-control" placeholder="Total Weight" value="{{ $prevois_store_data['total_weight'] ?? '' }}" name="total_weight" id="exampleFormControlInput1">
+                                <input type="text" class="form-control" placeholder="Total Weight" value="{{ old('total_weight', $prevois_store_data['total_weight'] ?? '') }}" name="total_weight" id="exampleFormControlInput1">
                                  @error('total_weight')
                                     <span class="alert text-danger error-required-msg">{{ $message }}</span>
                                  @enderror

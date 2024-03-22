@@ -66,3 +66,13 @@ Route::post('/admin/tackback-store/create-boxes', [TackbackStoreController::clas
 Route::get('/admin/tackback-store/pallet-boxes-detail', [TackbackStoreController::class, 'palletBoxesDetail'])->name('tackbackStore.box.palllet-detail');
 
 Route::post('/admin/tackback-store/save-new-boxes', [TackbackStoreController::class, 'saveNewBoxes'])->name('tackbackStore.box.save');
+
+Route::delete('/admin/tackback-store/delete-new-boxes/{id}', [TackbackStoreController::class, 'deleteBox'])->name('tackbackStore.box.delete');
+
+Route::get('/admin/tackback-store/pallet-boxes-product-list', [TackbackStoreController::class, 'palletBoxesProductList'])->name('tackbackStore.box.product-list');
+
+Route::post('/admin/tackback-store/save-boxes-new-product', [TackbackStoreController::class, 'saveBoxNewProduct'])->name('tackbackStore.box.product.save');
+
+Route::post('/admin/tackback-store/updated-new-boxes', [TackbackStoreController::class, 'updateNewBoxes'])->name('tackbackStore.box.updated');
+
+Route::get('/admin/tackback-store/create-store', [TackbackStoreController::class, 'createStore'])->name('admin.stores.create-store');

@@ -41,10 +41,6 @@ class AdminController extends Controller
             'products' => json_encode($allProducts),
         // other fields
         ]);
-        // print_r($request->asn);
-        // die();
         return redirect()->back()->with('success', 'tracback product created successfully!');
-        // echo ;
-        // die();
     }
 }

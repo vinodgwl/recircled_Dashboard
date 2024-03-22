@@ -7,9 +7,15 @@
             
              <div class="search-products justify-content-between d-flex ">
                 {{-- <h4>All Tackback<h4> --}}
-                    <div class="col-md-2">
+                     <div class="mt-2 set-btn-alingments">
+                        <a href="{{ route('admin.stores.create-store') }}" class="btn btn-secondary">
+                                Back
+                        </a>
+                    </div>
+                    <div class="col-md-2 mt-1">
                         <h4>All Tackback<h4> 
                     </div>
+                   
                     <form id="filterForm" method="GET" action="{{ route('admin.stores.brand-filter') }}">
                         <div class="d-flex">
                             <div class="col-md-10">

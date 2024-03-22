@@ -5,6 +5,7 @@ use App\Models\Brand;
 use App\Models\TackbackStore;
 use App\Models\StorePallet;
 use App\Models\StoreBox;
+use App\Models\BoxProduct;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Carbon\Carbon;
@@ -23,6 +24,12 @@ class TackbackStoreController extends Controller
         $step1_data = Session::get('step1_data');
         return view('admin.stores.create', ['brands' => $brands, 'prevois_store_data'=> $step1_data]);
     }
+
+    public function createStore(){
+         $brands = Brand::all();  
+         Session::forget('step1_data');
+         return view('admin.stores.create', ['brands' => $brands]);
+    }
     public function store(Request $request)
     {
         // add validation 
@@ -31,7 +38,7 @@ class TackbackStoreController extends Controller
             'total_weight' => 'required|integer|min:1',
             'trackback_product_store_type' => 'required',
             'brand_id' => 'required',
-            'shipment_id' => 'required',
+            'shipment_id' => 'required|unique:tackback_stores,shipment_id',
             'shipping_origin_zipcode' => 'required',
             'shipping_carrier' => 'required',
             'shipping_carrier_name' => 'required',
@@ -41,6 +48,7 @@ class TackbackStoreController extends Controller
             'trackback_product_store_type.required' => 'The Tackback Type field is required.',
             'quantity.min' => 'The quantity should be greater than 0',
             'total_weight.min' => 'The quantity should be greater than 0',
+            'shipment_id.unique' => 'The Shipment ID must be unique.',
             // Add other custom messages here
         ]);
         // echo 'check all object---------- </br>';
@@ -87,41 +95,10 @@ class TackbackStoreController extends Controller
     }
     public function index(Request $request)
     {
-        // Return a view for creating a new brand
-        // $stores = TackbackStore::all(); 
-        // Fetch the last inserted ID from the request
         $shimpent_id = $request->get('shimpent_id')?$request->get('shimpent_id'): 0;
-       
-         // Determine the number of items per page (adjust as needed)
         $perPage = 5;
-        // $stores = TackbackStore::orderByDesc('id')->limit($quantity)->get()->reverse();
-
-        // $stores = TackbackStore::orderByDesc('id')->paginate($perPage);
-    //     $stores = TackbackStore::orderByDesc('id')
-    // ->take($quantity)
-    // ->paginate($perPage);
-
-    // $quantity = 10; // Or any other value you prefer
-    // $perPage = 5; // Or any other value you prefer
-
-    // Query to retrieve the latest $quantity records and reverse them
-    // $stores = TackbackStore::latest()->take($quantity)->get()->reverse();
-
-    $stores = StorePallet::where('shipment_id', $shimpent_id)->latest()->get();
-
-
-    // $stores = TackbackStore::latest()->take($quantity)->paginate($perPage);
-
-        
-
-        // Paginate the fetched records
-        // $stores = TackbackStore::orderByDesc('id')->paginate(10);
-
-        // $stores = TackbackStore::orderByDesc('id')->limit($quantity)->paginate(10);
+        $stores = StorePallet::where('shipment_id', $shimpent_id)->latest()->get();
         $latestStoreDetail = TackbackStore::orderByDesc('id')->with('brand')->first();
-
-        // print_r($latestStoreDetail); die();
-        
         // Return a view and pass the fetched brands to it
         return view('admin.stores.index', ['stores' => $stores, 'latestStoreDetail' => $latestStoreDetail]);
     }
@@ -134,14 +111,9 @@ class TackbackStoreController extends Controller
             $store->created_store_shipment_date_time = Carbon::now();
             $store->save();
         }
-        // echo "good";
         return redirect()->route('admin.stores.saveList');
-        // echo $request->store_sub_brand;
     }
     public function updateSaveAndOpenStores(Request $request){
-        // echo 'good in save and open';
-        // print_r($request->store_ids); die();
-
         $shimpent_id = $request->shipment_id;
         $shipment_detail = TackbackStore::where('shipment_id', $shimpent_id)->first();
         foreach ($request->store_ids as $key => $store_id) {
@@ -158,22 +130,13 @@ class TackbackStoreController extends Controller
          $status1Count = StorePallet::where('tackback_store_id', $shipment_detail->id)->where('status', 1)->count();
           // Append query parameters to pagination links
             $StorePallet->appends($request->query());
-
-        //  print_r($storesList); die();
          return view('admin.stores.tackbackStoreShipment', ['StorePallet' => $StorePallet,
         'storesList' => $storesList, 'status1Count' => $status1Count]);
-        
-        
-        // echo "good";
-        // return redirect()->route('admin.stores.saveList');
     }
     public function tackbackStoreSaveList(Request $request){
         // Return a view for creating a new brand
-        // $stores = TackbackStore::all(); 
         // Fetch the last inserted ID from the request
         $quantity = $request->get('quantity')?$request->get('quantity'): 0;
-       
-         // Determine the number of items per page (adjust as needed)
         $perPage = 5;
         // $stores = TackbackStore::orderByDesc('id')->get()->reverse();
 
@@ -205,8 +168,6 @@ class TackbackStoreController extends Controller
             ->groupBy('shipment_id', 'id', 'shipping_carrier_name',  'trackback_product_store_type', 'total_weight', 'quantity', 'created_store_date_time') // Adding GROUP BY clause
             ->orderByDesc('id')
             ->paginate($perPage);
-        // print_r($stores);
-        // die();
         $latestStoreDetail = TackbackStore::with('brand')->first();
         $brands = Brand::all();  
         // Return a view and pass the fetched brands to it
@@ -214,9 +175,7 @@ class TackbackStoreController extends Controller
         'brands' =>$brands]);
     }
     public function cancelForm(){
-        // Clear session data
         Session::forget('step1_data');
-        // echo 'jiij';
         $brands = Brand::all();  
         // Return a view and pass the fetched brands to it
         // $step1_data = Session::get('step1_data');
@@ -362,5 +321,64 @@ class TackbackStoreController extends Controller
         $storeBoxList = StoreBox::where('store_pallet_id',  $store_pallet_id)->get();
         return view('admin.stores.tackbackStorePalletBox', ['StorePallet' => $StorePallet,
             'storesList' => $storesList, 'storeBoxList' => $storeBoxList]);
+    }
+
+    public function deleteBox($id){
+        $record = StoreBox::findOrFail($id);
+        $record->delete();
+        return redirect()->back()->with('success', 'Box deleted successfully.');
+    }
+
+    public function palletBoxesProductList(Request $request){
+        // echo $request->get('id');
+        $StorePalletSingledata = StoreBox::where('id', $request->get('id'))->first();
+        $StorePallet = StorePallet::where('id',  $StorePalletSingledata->store_pallet_id)->first();
+        // echo $StorePallet; die('ok');
+        $storesList = TackbackStore::where('id', $StorePallet->tackback_store_id)->with('brand')->first();
+        $storeBoxList = StoreBox::where('store_pallet_id',  $StorePalletSingledata->store_pallet_id)->get();
+        $productBoxList = BoxProduct::where('store_box_id', $request->get('id'))->get();
+        return view('admin.stores.tackbackStoreBoxDetail', ['StorePallet' => $StorePallet,
+            'storesList' => $storesList, 'storeBoxList' => $storeBoxList, 'singleBoxDetail' =>$StorePalletSingledata,
+        'productBoxList' => $productBoxList]);
+    }
+
+    public function saveBoxNewProduct(Request $request){
+
+        // Validate the incoming request
+    // $validatedData = $request->validate([
+    //     'product_name' => 'required|string',
+    //     'product_weight' => 'required|string',
+    //     'product_quantity' => 'required|integer|min:1',
+    //     'product_tier' => 'required|string',
+    // ]); 
+
+        $resaleCondition = $request->good_resale_condition == 1?1:0;
+        // Create a new BoxProduct instance
+        $boxProduct = new BoxProduct();
+        $boxProduct->store_pallet_id = $request->store_pallet_id;
+        $boxProduct->store_box_id = $request->box_id;
+        $boxProduct->shipment_id = $request->shipment_id;
+        $boxProduct->product_name = $request->product_name;
+        $boxProduct->product_weight = $request->product_weight;
+        $boxProduct->product_quantity = $request->product_quantity;
+        $boxProduct->product_tier = $request->product_tier;
+        $boxProduct->good_resale_condition = $request->good_resale_condition;
+
+        // Save the box product
+        $boxProduct->save();
+        return redirect()->back()->with('success', 'Box added successfully.');
+        
+    }
+
+    public function updateNewBoxes(Request $request){
+        // Update the record in the database
+        $id = $request->boxId;
+        $box = StoreBox::findOrFail($request->boxId);
+        $box->update([
+            'box_weight' => $request->box_weight,
+            'product_category' => $request->product_category,
+            'pre_consumer' => $request->pre_consumer,
+        ]);
+        return redirect()->back()->with('success', 'Box updated successfully.');
     }
 }

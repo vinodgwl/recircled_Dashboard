@@ -66,7 +66,7 @@
                     <th>Pallet No.</th>
                     <th>Pallet Unique Id</th>
                     <th>Sub Brand</th>
-                    <th>Weight</th>
+                    <th>Weight (lbs)</th>
                 </tr>
             </thead>
             <tbody>

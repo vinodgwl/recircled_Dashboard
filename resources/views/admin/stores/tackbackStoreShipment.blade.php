@@ -3,9 +3,16 @@
 
 @section('content')
     <div class="container-fluid">
-        <div class="card ">
+        {{-- <div class="card "> --}}
             <div class="card-header">
-                Tackback Products / Shipment ID: {{$storesList->shipment_id}}
+                <div class="mt-2 set-btn-alingments">
+                 <a href="{{ route('admin.stores.saveList') }}" class="btn btn-secondary">
+                        Back
+                 </a>
+               </div>
+               <div class="mt-2 set-btn-alingments">
+                 All Tackback / Shipment ID: {{$storesList->shipment_id}}
+               </div>
             </div>
             @if (session('success'))
                 <div id="successMessage" class="alert alert-success">
@@ -51,7 +58,7 @@
                         </div>
                     </div>
                 </div>
-        </div>
+        {{-- </div> --}}
         <table id="dataTable" class="table table-bordered mt-4">
             <thead>
                 <tr>
@@ -197,7 +204,7 @@
                                     </div>
                                     
                                     <div class="col-md-4">
-                                        <label for="logo" class="form-label">Material weight:</label>
+                                        <label for="logo" class="form-label">Material weight (lbs)</label>
                                         <input type="number" class="form-control" name="material_weight[]"
                                             placeholder="Weight">
                                     </div>
@@ -339,5 +346,8 @@
 .custom-error {
     margin-left: 141px;
     margin-top: 3px;
+}
+.set-btn-alingments {
+    margin-left: 17px;
 }
 </style>
