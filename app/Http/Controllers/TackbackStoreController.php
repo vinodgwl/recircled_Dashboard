@@ -48,7 +48,7 @@ class TackbackStoreController extends Controller
             'trackback_product_store_type.required' => 'The Tackback Type field is required.',
             'quantity.min' => 'The quantity should be greater than 0',
             'total_weight.min' => 'The quantity should be greater than 0',
-            'shipment_id.unique' => 'The Shipment ID must be unique.',
+            'shipment_id.unique' => 'Shipment id already exist',
             // Add other custom messages here
         ]);
         // echo 'check all object---------- </br>';
@@ -269,6 +269,7 @@ class TackbackStoreController extends Controller
             $StorePallet = StorePallet::findOrFail($request->storeId);
             $StorePallet->pallet_packaging_material = $materialDataJson;
             $StorePallet->box_quantity  = $request->boxboxQuantity;
+            $StorePallet->status  = 1;
                 // Save the StoreBox
                 $StorePallet->save();
             }
@@ -351,7 +352,18 @@ class TackbackStoreController extends Controller
     //     'product_quantity' => 'required|integer|min:1',
     //     'product_tier' => 'required|string',
     // ]); 
+// add validation 
+        $request->validate([
+            'product_name' => 'required',
+            'product_quantity' => 'required|integer|min:1',
+            'product_weight' => 'required',
+            'product_tier' => 'required',
 
+        ], [
+            'product_quantity.min' => 'The quantity should be greater than 0',
+            'product_weight.min' => 'The quantity should be greater than 0',
+            // Add other custom messages here
+        ]);
         $resaleCondition = $request->good_resale_condition == 1?1:0;
         // Create a new BoxProduct instance
         $boxProduct = new BoxProduct();

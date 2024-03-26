@@ -74,21 +74,21 @@
                        {{-- <td style="color: {{ $store->status == 0 ? 'red' : 'black' }}">
                             @if ($store->status == 0)
                               
-                                    Unopened <i class="bi bi-chevron-right status-icons"></i>
+                                    Unopened <i class="bi bi-chevron-right shipment-list-status-icons"></i>
                             @else
-                                    Opened <i class="bi bi-chevron-right status-icons"></i>
+                                    Opened <i class="bi bi-chevron-right shipment-list-status-icons"></i>
                             @endif
                         </td> --}}
-                        <td style="color: {{ $store->status == 0 ? 'red' : 'black' }}" class="status-icons">
+                        <td style="color: {{ $store->status == 0 ? 'red' : 'black' }}" class="shipment-list-status-icons">
                             @if ($store->status == 0)
                             Unopened
                                 <a href="{{ route('admin.stores.shipment-detail', ['id' => $store->id]) }}">
-                                    <i class="bi bi-chevron-right status-icons"></i>
+                                    <i class="bi bi-chevron-right shipment-list-status-icons"></i>
                                 </a>
                             @else
                             Opened
                                 <a href="{{ route('admin.stores.shipment-detail', ['id' => $store->id]) }}">
-                                     <i class="bi bi-chevron-right status-icons"></i>
+                                     <i class="bi bi-chevron-right shipment-list-status-icons"></i>
                                 </a>
                             @endif
                         </td>
@@ -238,71 +238,3 @@
         });
         </script>
 @endpush
-<style>
-.pagination {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-}
-
-.pagination .page-item {
-    display: inline-block;
-}
-
-.pagination .page-link {
-    color: #333;
-    padding: 8px 12px;
-    border: 1px solid #ccc;
-    text-decoration: none;
-    margin: 0 2px; /* Adjust the margin as needed */
-}
-
-.pagination .page-link:hover {
-    background-color: #f0f0f0;
-}
-
-.pagination .page-item.active .page-link {
-    background-color: #007bff;
-    color: #fff;
-    border-color: #007bff;
-}
-
-.pagination .page-item.disabled .page-link {
-    pointer-events: none;
-    background-color: #f0f0f0;
-    color: #ccc;
-}
-
-
-.setfield-space {
-    margin-right: 15px;
-}
-
- .main-search {
-    padding: 15px;
-}
-
-.search-products {
-    max-width: 600px;
-    width: 100%;
-}
-
-.search-products fieldset {
-    max-width: 225px;
-    width: 100%;
-}
-
-.search-products fieldset input {
-    /* padding-left: 100px */
-} 
-.status-icons {
-    background-color: #E8E8E8; 
-    padding: 2px; 
-    color: #000000;
-    margin-left: 35px;
-}
-/* .product-table-main-list {
-    padding: 20px;
-}
-
-</style>

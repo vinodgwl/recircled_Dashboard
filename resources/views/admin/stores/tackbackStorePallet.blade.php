@@ -325,6 +325,3 @@
         });
     </script>
 @endpush
-
-<style>
-</style>

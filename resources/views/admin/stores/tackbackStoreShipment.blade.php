@@ -5,12 +5,12 @@
     <div class="container-fluid">
         {{-- <div class="card "> --}}
             <div class="card-header">
-                <div class="mt-2 set-btn-alingments">
+                <div class="mt-2 pallet-list-set-btn-alingments">
                  <a href="{{ route('admin.stores.saveList') }}" class="btn btn-secondary">
                         Back
                  </a>
                </div>
-               <div class="mt-2 set-btn-alingments">
+               <div class="mt-2 pallet-list-set-btn-alingments">
                  All Tackback / Shipment ID: {{$storesList->shipment_id}}
                </div>
             </div>
@@ -82,12 +82,12 @@
                        {{-- <td style="color: {{ $store->status == 0 ? 'red' : 'black' }}">
                             @if ($store->status == 0)
                               
-                                    Unopened <i class="bi bi-chevron-right status-icons"></i>
+                                    Unopened <i class="bi bi-chevron-right pallet-list-status-icons"></i>
                             @else
-                                    Opened <i class="bi bi-chevron-right status-icons"></i>
+                                    Opened <i class="bi bi-chevron-right pallet-list-status-icons"></i>
                             @endif
                         </td> --}}
-                        <td style="color: {{ $store->status == 0 ? 'red' : 'black' }}" class="status-icons">
+                        <td style="color: {{ $store->status == 0 ? 'red' : 'black' }}" class="pallet-list-status-icons">
                             @if ($store->status == 0)
                             Unopened
                                 <a data-bs-toggle="modal"
@@ -97,18 +97,18 @@
                                 data-pallet-weight="{{ $store->pallet_weight }}"
                                 data-sub-brands="{{ $store->store_sub_brand }}"
                                 href="#" onclick="clearBoxQuantityData(event)">
-                                    <i class="bi bi-chevron-right status-icons"></i>
+                                    <i class="bi bi-chevron-right pallet-list-status-icons"></i>
                                 </a>
                             @else
                             Opened
-                                <a data-bs-toggle="modal"
+                                <a class="shipment-list-set-alingment-icons" data-bs-toggle="modal"
                                 data-bs-target="#exampleModal"
                                 data-store-id="{{ $store->id }}"
                                 data-pallet-id="{{ $store->pallet_unique_id }}"
                                 data-pallet-weight="{{ $store->pallet_weight }}"
                                 data-sub-brands="{{ $store->store_sub_brand }}"
                                 href="#" onclick="clearBoxQuantityData(event)">
-                                     <i class="bi bi-chevron-right status-icons"></i>
+                                     <i class="bi bi-chevron-right pallet-list-status-icons"></i>
                                 </a>
                             @endif
                         </td>
@@ -183,7 +183,7 @@
                             <div class="col-md-2">
                                 <input type="text" name="boxboxQuantity" class="form-control" id="boxQuantity">
                             </div>
-                                <span class="text-danger error-required-msg custom-error" id="errorMessage" style="display: none;">Quantity field is required and it should be greater than 0</span>
+                                <span class="text-danger pallet-list-error-required-msg pallet-list-custom-error" id="errorMessage" style="display: none;">Quantity field is required and it should be greater than 0</span>
                             
                         </div>
                         <input type="hidden" name="storeId" id="storeId">
@@ -332,22 +332,3 @@
     }
     </script>
 @endpush
-
-<style>
-    .status-icons {
-    background-color: #E8E8E8; 
-    padding: 2px; 
-    color: #000000;
-    margin-left: 35px;
-}
-.error-required-msg {
-    padding-left: 0px !important;
-}
-.custom-error {
-    margin-left: 141px;
-    margin-top: 3px;
-}
-.set-btn-alingments {
-    margin-left: 17px;
-}
-</style>

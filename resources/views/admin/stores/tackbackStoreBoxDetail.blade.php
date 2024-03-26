@@ -5,12 +5,12 @@
     <div class="container-fluid">
         {{-- <div class="card "> --}}
             <div class="card-header">
-                <div class="mt-2 set-btn-alingments">
+                <div class="mt-2 box-product-list-set-btn-alingments">
                  <a href="{{ route('tackbackStore.box.palllet-detail', ['pallet_id' => $StorePallet->id, 'tackback_store_id' => $StorePallet->tackback_store_id ]) }}" class="btn btn-secondary">
                         Back
                  </a>
                </div>
-               <div class="mt-2 set-btn-alingments">
+               <div class="mt-2 box-product-list-set-btn-alingments">
                All Tackback / Shipment ID: {{$storesList->shipment_id}} / Pallet ID: {{$StorePallet->pallet_unique_id}}/Box ID:
                 {{$singleBoxDetail->box_unique_id }}
                </div>
@@ -64,9 +64,9 @@
                                     <label for="exampleFormControlInput1" class="form-label">Box Packaging Weight</label>
                                     <input type="text" name="box_weight" placeholder="weight" class="form-control" id="box_weight">
                                     @error('box_weight')
-                                    <span class="alert text-danger error-required-msg">{{ $message }}</span>
+                                    <span class="alert text-danger box-product-list-error-required-msg">{{ $message }}</span>
                                     @enderror
-                                    <span class="text-danger error-required-msg custom-error" id="boxWeightError" style="display: none;">Weight field is required and it should be greater than 0</span>
+                                    <span class="text-danger box-product-list-error-required-msg custom-error" id="boxWeightError" style="display: none;">Weight field is required and it should be greater than 0</span>
                             </div>
                         </div>
                         <form id="myForm" method="post" action="{{ route('tackbackStore.box.product.save') }}">
@@ -85,6 +85,9 @@
                                                 <option value="jeans">Jeans</option>
                                                 <option value="dress">Dress</option>
                                             </select>
+                                            @error('product_name')
+                                            <span class="alert text-danger create-error-required-msg">{{ $message }}</span>
+                                            @enderror
                                         </div>
                                         <div class="col-md-2">
                                             <label for="exampleFormControlInput1" class="form-label">Tier</label>
@@ -94,14 +97,23 @@
                                                 <option value="tier-2">Tier-2</option>
                                                 <option value="tier-3">Tier-3</option>
                                             </select>
+                                            @error('product_tier')
+                                            <span class="alert text-danger create-error-required-msg">{{ $message }}</span>
+                                            @enderror
                                         </div>
                                         <div class="col-md-2">
                                             <label for="exampleFormControlInput1" class="form-label">Quantity</label>
                                             <input type="text" name="product_quantity" class="form-control" id="exampleFormControlInput1">
+                                            @error('product_quantity')
+                                            <span class="alert text-danger create-error-required-msg">{{ $message }}</span>
+                                            @enderror
                                         </div>
                                         <div class="col-md-2">
                                             <label for="exampleFormControlInput1" class="form-label">Weight</label>
                                             <input type="text" name="product_weight" class="form-control" id="exampleFormControlInput1">
+                                            @error('product_weight')
+                                            <span class="alert text-danger create-error-required-msg">{{ $message }}</span>
+                                            @enderror
                                         </div>
                                         
                                         <div class="col-md-2 mt-2">
@@ -109,7 +121,8 @@
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" name="good_resale_condition" type="checkbox" id="inlineCheckbox1" value="1">
                                             <label class="form-check-label" for="inlineCheckbox1">Yes</label>
-                                            </div>
+                                            
+                                        </div>
                                         </div>
                                         <div class="col-md-2 mt-3">
                                         <!-- <button type="button" class="btn btn-secondary">Add</button> -->
@@ -144,16 +157,17 @@
                         <td>{{$box->product_tier  }}</td>
                         <td>{{ $box->product_quantity }} lbs</td>
                          <td>{{$box->product_weight}}</td>
-                         <td>@if ($box->good_resale_condition == 0)
-                              No
+                         <td> @if ($box->good_resale_condition == 1)
+                                <i class="bi bi-check-lg text-success fs-4"></i>
                             @else
-                             Yes
-                            @endif</td>
+                                <i class="bi bi-x-lg text-danger"></i>
+                            @endif
+                        </td>
                        <td style="display: flex; color: {{ $box->status == 0 ? 'red' : 'black' }}">
                             @if ($box->status == 0)
-                              <i class="bi bi-chevron-right status-icons"></i>
+                              <i class="bi bi-chevron-right box-product-list-status-icons"></i>
                             @else
-                                    Opened <i class="bi bi-pencil" style="color: #9d8787"></i> <i class="bi bi-trash" style="color: #9d8787"></i> <i class="bi bi-chevron-right status-icons"></i>
+                                    Opened <i class="bi bi-pencil" style="color: #9d8787"></i> <i class="bi bi-trash" style="color: #9d8787"></i> <i class="bi bi-chevron-right box-product-list-status-icons"></i>
                             @endif
                         </td>
                     </tr>
@@ -170,7 +184,7 @@
                     <td>04</td>
                     <td>12</td>
                     <td>-</td>
-                    <td class="text-danger"><i class="bi bi-pencil" style="color: #9d8787"></i>  <i class="bi bi-trash delete-icons"></i></td>
+                    <td class="text-danger"><i class="bi bi-pencil" style="color: #9d8787"></i>  <i class="bi bi-trash box-product-list-delete-icons"></i></td>
                 </tr> 
                 
                 <tr>
@@ -179,7 +193,7 @@
                     <td>01</td>
                     <td>14</td>
                     <td>-</td>
-                    <td class="text-danger"><i class="bi bi-pencil" style="color: #9d8787"></i>  <i class="bi bi-trash delete-icons"></i></td>
+                    <td class="text-danger"><i class="bi bi-pencil" style="color: #9d8787"></i>  <i class="bi bi-trash box-product-list-delete-icons"></i></td>
                 </tr> --}}
             </tbody>
         </table>
@@ -214,7 +228,7 @@
                             <div class="col-md-6">
                                 <input type="text" name="boxboxQuantity" class="form-control" id="boxQuantity">
                             </div>
-                                <span class="text-danger error-required-msg custom-error" id="errorMessage" style="display: none;">Quantity field is required and it should be greater than 0</span>
+                                <span class="text-danger box-product-list-error-required-msg custom-error" id="errorMessage" style="display: none;">Quantity field is required and it should be greater than 0</span>
                             
                         </div>
                         <input type="hidden" name="storeId" id="storeId">
@@ -364,34 +378,3 @@
     }
     </script>
 @endpush
-
-<style>
-    .status-icons {
-    background-color: #E8E8E8;
-    color: #000000;
-    padding: 8px 7px;
-}
-.error-required-msg {
-    padding-left: 0px !important;
-}
-.delete-icons{
-    background-color: #E8E8E8;
-    padding: 8px; 
-    color: #000000;
-    margin-left: 5px;
-    
-}
-.edit-icons {
-    /* background-color: #E8E8E8; */
-    padding: 2px; 
-    color: #000000;
-    margin-left: 44px;
-}
-/* .custom-error {
-    margin-left: 141px;
-    margin-top: 3px;
-} */
-.set-btn-alingments {
-    margin-left: 17px;
-}
-</style>

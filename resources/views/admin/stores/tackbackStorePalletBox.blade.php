@@ -5,12 +5,12 @@
     <div class="container-fluid">
         {{-- <div class="card "> --}}
             <div class="card-header">
-               <div class="mt-2 set-btn-alingments">
+               <div class="mt-2 pallet-box-added-set-btn-alingments">
                  <a href="{{ route('admin.stores.shipment-detail', ['id' => $StorePallet->tackback_store_id ]) }}" class="btn btn-secondary">
                         Back
                  </a>
                </div>
-               <div class="mt-2 set-btn-alingments">
+               <div class="mt-2 pallet-box-added-set-btn-alingments">
                 All Tackback / Shipment ID: {{$storesList->shipment_id}} / Pallet ID: {{$StorePallet->pallet_unique_id}}
                </div>
             </div>
@@ -83,9 +83,9 @@
                                     <label for="exampleFormControlInput1" class="form-label">Weight</label>
                                     <input type="text" name="box_weight" placeholder="weight" class="form-control" id="box_weight">
                                     @error('box_weight')
-                                    <span class="alert text-danger error-required-msg">{{ $message }}</span>
+                                    <span class="alert text-danger pallet-box-added-error-required-msg">{{ $message }}</span>
                                     @enderror
-                                    <span class="text-danger error-required-msg custom-error" id="boxWeightError" style="display: none;">Weight field is required and it should be greater than 0</span>
+                                    <span class="text-danger pallet-box-added-error-required-msg custom-error" id="boxWeightError" style="display: none;">Weight field is required and it should be greater than 0</span>
                                 </div>
                                 <div class="col-md-2">
                                     <label for="exampleFormControlInput1" class="form-label">Product Category</label>
@@ -95,7 +95,7 @@
                                         <option value="plastic">Plastic</option>
                                         <option value="wood">Wood</option>
                                     </select>
-                                     <span class="text-danger error-required-msg custom-error" id="productCategoryError" style="display: none;">Weight field is required and it should be greater than 0</span>
+                                     <span class="text-danger pallet-box-added-error-required-msg custom-error" id="productCategoryError" style="display: none;">Weight field is required and it should be greater than 0</span>
                                 </div>
                                 <div class="col-md-2">
                                     <label for="exampleFormControlInput1" class="form-label">Pre Consumer</label>
@@ -104,7 +104,7 @@
                                         <option value="yes">Yes</option>
                                         <option value="no">No</option>
                                     </select>
-                                     <span class="text-danger error-required-msg custom-error" id="preConsumerError" style="display: none;">Weight field is required and it should be greater than 0</span>
+                                     <span class="text-danger pallet-box-added-error-required-msg custom-error" id="preConsumerError" style="display: none;">Weight field is required and it should be greater than 0</span>
                                 </div>
                                 <input type="hidden" name="store_pallet_id" id="store_id" value="{{ $StorePallet->id }}">
                                 <input type="hidden" name="pallet_unique_id" id="pallet_unique_id" value="{{ $StorePallet->pallet_unique_id }}">
@@ -152,22 +152,22 @@
                                 data-product-category="{{ $box->product_category }}"
                                 data-pre-consumer="{{ $box->pre_consumer }}"
                                  onclick="clearBoxQuantityData(event)">
-                                    <i class="bi bi-pencil edit-icons"></i>
+                                    <i class="bi bi-pencil pallet-box-added-edit-icons"></i>
                        </a>  <form id="boxform" action="{{ route('tackbackStore.box.delete', $box->id) }}" method="POST">
                                     @csrf
                                     @method('DELETE')
                                     <button style="margin-top:2px;" type="submit" class="btn btn-link" onclick="return confirm('Are you sure you want to delete this box?')">
-                                        <i class="bi bi-trash delete-icons"></i>
+                                        <i class="bi bi-trash pallet-box-added-delete-icons"></i>
                                     </button>
                                     {{-- <a onclick="deletePalletBox({{$box->id}})">
-                                        <i class="bi bi-trash delete-icons"></i>
+                                        <i class="bi bi-trash pallet-box-added-delete-icons"></i>
                                     </a> --}}
                                 </form>  
                                 <a style="margin-top: 8px;" href="{{ route('tackbackStore.box.product-list', ['id' => $box->id]) }}">
-                                     <i class="bi bi-chevron-right status-icons"></i>
+                                     <i class="bi bi-chevron-right pallet-box-added-status-icons"></i>
                                 </a></i>
                             @else
-                                    Opened <i class="bi bi-pencil" style="color: #9d8787"></i> <i class="bi bi-trash" style="color: #9d8787"></i> <i class="bi bi-chevron-right status-icons"></i>
+                                    Opened <i class="bi bi-pencil" style="color: #9d8787"></i> <i class="bi bi-trash" style="color: #9d8787"></i> <i class="bi bi-chevron-right pallet-box-added-status-icons"></i>
                             @endif
                         </td>
                     </tr>
@@ -229,7 +229,7 @@
                             <div class="col-md-6">
                                 <input type="text" name="box_weight" class="form-control" id="boxTotelWeight">
                             </div>
-                                <span class="text-danger error-required-msg custom-error" id="errorMessage" style="display: none;">Quantity field is required and it should be greater than 0</span>
+                                <span class="text-danger pallet-box-added-error-required-msg custom-error" id="errorMessage" style="display: none;">Quantity field is required and it should be greater than 0</span>
                         </div>
                         <input type="hidden" name="boxId" id="boxId">
                         <div class="row mt-4">
@@ -380,33 +380,3 @@
     </script>
 @endpush
 
-<style>
-    .status-icons {
-    background-color: #E8E8E8;
-    color: #000000;
-    padding: 9px 10px;
-}
-.error-required-msg {
-    padding-left: 0px !important;
-}
-.delete-icons{
-    background-color: #E8E8E8;
-    padding: 10px; 
-    color: #000000;
-    margin-left: 5px;
-    
-}
-.edit-icons {
-       background-color: #E8E8E8;
-    padding: 8px;
-    color: #000000;
-    margin-left: 45px;
-}
-.set-btn-alingments {
-    margin-left: 17px;
-}
-/* .custom-error {
-    margin-left: 141px;
-    margin-top: 3px;
-} */
-</style>

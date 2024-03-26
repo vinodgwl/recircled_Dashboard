@@ -46,7 +46,7 @@
                             </div>
                         </div>
                     </div>
-                   <div class="row detailtack">
+                   <div class="row pallet-generate-detailtack">
                             <div class="col-md-3 pl-5">
                                 <label class="form-check-label" for="flexRadioDefault1">Date & Time</label>
                                <span class="fw-bold">{{ \Carbon\Carbon::parse($latestStoreDetail->created_store_date_time)->format('d/m/y h:i:s A') }}</span>
@@ -123,12 +123,12 @@
         <div class="p-4">
             <div class="row justify-content-between">
                 <div class="col-auto">
-                    <a href="{{ route('admin.stores.create') }}"  class="btn btn-secondary me-2 setBtnColor">Back</a>
+                    <a href="{{ route('admin.stores.create') }}"  class="btn btn-secondary me-2 pallet-generate-setBtnColor">Back</a>
                     {{-- <button type="button" onclick="window.location='{{ route('brands.create') }}'" class="btn btn-secondary me-2">Back</button> --}}
                 </div>
                 <div class="col-auto">
                     {{-- <a href="{{ route('admin.stores.create') }}" class="btn btn-secondary me-2">Back</a> --}}
-                    <button type="button" onclick="showToastr()" class="btn btn-secondary me-2 setBtnColor">Cancel</button>
+                    <button type="button" onclick="showToastr()" class="btn btn-secondary me-2 pallet-generate-setBtnColor">Cancel</button>
                     <button type="submit" id="submitBtn" class="btn btn-secondary">Save</button>
                     <button type="button" id="saveAndOpenBtn" onclick="saveAndOpen()" class="btn btn-secondary">Save & Open</button>
                 </div>
@@ -139,106 +139,5 @@
 @endsection
 
 @push('scripts')
-    <script>
-        $(document).ready(function() {
-            $('#dataTable').DataTable();
-        });
-        document.addEventListener('DOMContentLoaded', function () {
-        const palletWeightInputs = document.querySelectorAll('.pallet-weight-input');
-            
-        palletWeightInputs.forEach(input => {
-            input.addEventListener('input', function () {
-                if (parseFloat(input.value) < 1) {
-                    input.value = 1;
-                }
-                let totalWeight = 0;
-                palletWeightInputs.forEach(input => {
-                    totalWeight += parseFloat(input.value) || 0;
-                });
-                let totel_weight  = $('#totel_weight').val();
-                // Ensure the input value is at least 1
-                
-                console.log('totel weight is here=======', totalWeight, 'and totel weight=====', totel_weight);
-                if (totalWeight > totel_weight) {
-                    // toastr.error('Total weight exceeds 100 lbs.');
-                    // You may add additional logic here if needed
-                    document.getElementById('totalWeightError').classList.remove('d-none');
-                    document.getElementById('submitBtn').setAttribute('disabled', 'disabled');
-                     document.getElementById('saveAndOpenBtn').setAttribute('disabled', 'disabled');
-                } else {
-                    // Here you can submit the form or perform other actions
-                     document.getElementById('totalWeightError').classList.add('d-none');
-                     document.getElementById('submitBtn').removeAttribute('disabled');
-                     document.getElementById('saveAndOpenBtn').removeAttribute('disabled');
-                }
-                
-            });
-        });
-    });
-       function showToastr() {
-        toastr.success('This is a success message!666', 'Success');
-        // toastr.info('Total weight exceeds 100 lbs.');
-        // toastr.error('This is a success message!', '', { 
-        //     timeOut: 3000,
-        //     positionClass: 'toast-top-right'
-        // });
-    }
-    function saveAndOpen() {
-        // Set the form action URL to the desired route for "Save & Open"
-        document.getElementById("palletForm").action = "{{ route('trackbackProductSaveAndOpen.update.stores') }}";
-        // Submit the form
-        var form = document.getElementById("palletForm");
-        // Perform client-side validation
-        if (!form.checkValidity()) {
-            // If the form is invalid, trigger the form validation
-            form.reportValidity();
-            return;
-        }
-        document.getElementById("palletForm").submit();
-    }
-    </script>
+    <script src="{{ asset('js/customCreateStore.js') }}"></script>
 @endpush
-
-<style>
-.pagination {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-}
-
-.pagination .page-item {
-    display: inline-block;
-}
-
-.pagination .page-link {
-    color: #333;
-    padding: 8px 12px;
-    border: 1px solid #ccc;
-    text-decoration: none;
-    margin: 0 2px; /* Adjust the margin as needed */
-}
-
-.pagination .page-link:hover {
-    background-color: #f0f0f0;
-}
-
-.pagination .page-item.active .page-link {
-    background-color: #007bff;
-    color: #fff;
-    border-color: #007bff;
-}
-
-.pagination .page-item.disabled .page-link {
-    pointer-events: none;
-    background-color: #f0f0f0;
-    color: #ccc;
-}
-
-.detailtack {
-    margin-left: 4px !important;
-}
-.setBtnColor {
-    background-color: #ffffff !important;
-    color: #000000 !important;
-}
-</style>

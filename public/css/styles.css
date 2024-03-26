@@ -1,0 +1,171 @@
+/* css for store create store pages start*/
+.set-create-btn {
+    margin-left: 750px;
+}
+
+.create-store-btn-size {
+    padding: 7px 30px !important;
+}
+
+.create-error-required-msg {
+    padding-left: 0px !important;
+}
+
+/* css for store create store pages end*/
+
+/* css for genearate pallet id from shipment pages start*/
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pagination .page-item {
+    display: inline-block;
+}
+
+.pagination .page-link {
+    color: #333;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    text-decoration: none;
+    margin: 0 2px;
+    /* Adjust the margin as needed */
+}
+
+.pagination .page-link:hover {
+    background-color: #f0f0f0;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #007bff;
+    color: #fff;
+    border-color: #007bff;
+}
+
+.pagination .page-item.disabled .page-link {
+    pointer-events: none;
+    background-color: #f0f0f0;
+    color: #ccc;
+}
+
+.pallet-generate-detailtack {
+    margin-left: 4px !important;
+}
+
+.pallet-generate-setBtnColor {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+}
+
+/* css for genearate pallet id from shipment pages end*/
+
+/* css for shipment list pages start*/
+.setfield-space {
+    margin-right: 15px;
+}
+
+.main-search {
+    padding: 15px;
+}
+
+.shipment-list-status-icons {
+    background-color: #E8E8E8;
+    padding: 2px;
+    color: #000000;
+    margin-left: 35px;
+}
+
+.shipment-list-set-alingment-icons {
+    margin-left: 49px;
+}
+
+/* css for shipment list pages end*/
+
+/* css for pallet list of shipment pages start*/
+.pallet-list-status-icons {
+    background-color: #E8E8E8;
+    padding: 2px;
+    color: #000000;
+    margin-left: 35px;
+}
+
+.pallet-list-error-required-msg {
+    padding-left: 0px !important;
+}
+
+.pallet-list-custom-error {
+    margin-left: 141px;
+    margin-top: 3px;
+}
+
+.pallet-list-set-btn-alingments {
+    margin-left: 17px;
+}
+
+/* css for pallet list of shipment pages end*/
+
+/* css for box list of pallet pages end*/
+.pallet-box-added-status-icons {
+    background-color: #E8E8E8;
+    color: #000000;
+    padding: 9px 10px;
+}
+
+.pallet-box-added-error-required-msg {
+    padding-left: 0px !important;
+}
+
+.pallet-box-added-delete-icons {
+    background-color: #E8E8E8;
+    padding: 10px;
+    color: #000000;
+    margin-left: 5px;
+
+}
+
+.pallet-box-added-edit-icons {
+    background-color: #E8E8E8;
+    padding: 8px;
+    color: #000000;
+    margin-left: 45px;
+}
+
+.pallet-box-added-set-btn-alingments {
+    margin-left: 17px;
+}
+
+/* css for box list of pallet pages end*/
+
+/* css for product list of box pages start*/
+.box-product-list-status-icons {
+    background-color: #E8E8E8;
+    color: #000000;
+    padding: 8px 7px;
+}
+
+.box-product-list-error-required-msg {
+    padding-left: 0px !important;
+}
+
+.box-product-list-delete-icons {
+    background-color: #E8E8E8;
+    padding: 8px;
+    color: #000000;
+    margin-left: 5px;
+
+}
+
+.box-product-list-edit-icons {
+    /* background-color: #E8E8E8; */
+    padding: 2px;
+    color: #000000;
+    margin-left: 44px;
+}
+
+.box-product-list-set-btn-alingments {
+    margin-left: 17px;
+}
+
+/* css for product list of box pages end*/

@@ -11,7 +11,10 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
     <script src="https://code.jquery.com/jquery-3.6.3.min.js"></script>
-    
+    {{-- <script src="{{ asset('js/customCreateStore.js') }}"></script> --}}
+     {{-- <script src="{{ asset('js/custom.js') }}"></script> --}}
+    {{-- add cutom style css --}}
+    <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
 
 </head>
 <body>

@@ -3,8 +3,8 @@
 
 @section('content')
     <div class="container-fluid">
-        <h1>Admin Dashboard</h1>
-        <table id="dataTable" class="table table-bordered">
+        <h1>Recircled Dashboard</h1>
+        {{-- <table id="dataTable" class="table table-bordered">
             <thead>
                 <tr>
                     <th>#</th>
@@ -21,7 +21,7 @@
                     </tr>
                 @endforeach
             </tbody>
-        </table>
+        </table> --}}
     </div>
 @endsection
 

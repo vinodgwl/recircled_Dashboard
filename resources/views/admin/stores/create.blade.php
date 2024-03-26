@@ -6,7 +6,7 @@
         <!-- <h1>Admin Dashboard</h1> -->
         {{-- <div class="card"> --}}
             <div class="card-header p-1 mt-2 ">
-               <h4> New Tackback</h4> 
+               <h4 class="new-tackback"> New Tackback</h4> 
             </div>
             @if(session('success'))
             <div id="successMessage" class="alert alert-success">
@@ -32,7 +32,7 @@
                                     </label>
                                 </div>
                                 @error('trackback_product_store_type')
-                                    <span class="alert text-danger error-required-msg">{{ $message }}</span>
+                                    <span class="alert text-danger create-error-required-msg">{{ $message }}</span>
                                  @enderror
                             </div>
                             <div class="col-md-2">
@@ -70,21 +70,21 @@
                                     @endforeach
                                 </select>
                                 @error('brand_id')
-                                    <span class="alert text-danger error-required-msg">{{ $message }}</span>
+                                    <span class="alert text-danger create-error-required-msg">{{ $message }}</span>
                                  @enderror
                             </div>
                             <div class="col-md-2">
                                 <label for="shipment_id" class="form-label">Shipment ID</label>
                                 <input type="text" class="form-control" placeholder="Shipment ID" value="{{ $prevois_store_data['shipment_id'] ?? '' }}" name="shipment_id">
                                 @error('shipment_id')
-                                    <span class="alert text-danger error-required-msg">{{ $message }}</span>
+                                    <span class="alert text-danger create-error-required-msg">{{ $message }}</span>
                                  @enderror
                             </div>
                             <div class="col-md-2">
                                 <label for="shipping_origin_zipcode" class="form-label">Shipping origin zipcode</label>
                                 <input type="text" class="form-control" placeholder="Zipcode" value="{{ $prevois_store_data['shipping_origin_zipcode'] ?? '' }}" name="shipping_origin_zipcode">
                                 @error('shipping_origin_zipcode')
-                                    <span class="alert text-danger error-required-msg">{{ $message }}</span>
+                                    <span class="alert text-danger create-error-required-msg">{{ $message }}</span>
                                  @enderror
                             </div>
                             <div class="col-md-2">
@@ -95,14 +95,14 @@
                                     <option value="other" {{ isset($prevois_store_data['shipping_carrier']) && $prevois_store_data['shipping_carrier'] === 'other' ? 'selected' : '' }}>Other</option>
                                 </select>
                                 @error('shipping_carrier')
-                                    <span class="alert text-danger error-required-msg">{{ $message }}</span>
+                                    <span class="alert text-danger create-error-required-msg">{{ $message }}</span>
                                  @enderror
                             </div>
                             <div class="col-md-2">
                                 <label for="exampleFormControlInput1"  class="form-label">Shipping Carrier Name</label>
                                 <input type="text" class="form-control" placeholder="Name" value="{{ $prevois_store_data['shipping_carrier_name'] ?? '' }}" name="shipping_carrier_name" id="exampleFormControlInput1">
                                 @error('shipping_carrier_name')
-                                    <span class="alert text-danger error-required-msg">{{ $message }}</span>
+                                    <span class="alert text-danger create-error-required-msg">{{ $message }}</span>
                                  @enderror
                             </div>
                         </div>
@@ -117,21 +117,21 @@
                                     <option value="box" {{ old('type', $prevois_store_data['type'] ?? '') == 'box' ? 'selected' : '' }}>Box</option>
                                 </select>
                                 @error('type')
-                                    <span class="alert text-danger error-required-msg">{{ $message }}</span>
+                                    <span class="alert text-danger create-error-required-msg">{{ $message }}</span>
                                  @enderror
                             </div>
                             <div class="col-md-2">
                                 <label for="exampleFormControlInput1"  class="form-label">Quantity</label>
                                 <input type="text" class="form-control" placeholder="Quantity" value="{{ old('quantity', $prevois_store_data['quantity'] ?? '') }}"  name="quantity" id="exampleFormControlInput1">
                                  @error('quantity')
-                                <span class="alert text-danger error-required-msg">{{ $message }}</span>
+                                <span class="alert text-danger create-error-required-msg">{{ $message }}</span>
                                 @enderror
                             </div>
                             <div class="col-md-2">
                                 <label for="exampleFormControlInput1"  class="form-label">Total Weight(lbs)</label>
                                 <input type="text" class="form-control" placeholder="Total Weight" value="{{ old('total_weight', $prevois_store_data['total_weight'] ?? '') }}" name="total_weight" id="exampleFormControlInput1">
                                  @error('total_weight')
-                                    <span class="alert text-danger error-required-msg">{{ $message }}</span>
+                                    <span class="alert text-danger create-error-required-msg">{{ $message }}</span>
                                  @enderror
                             </div>
                            {{-- <div class="col-md-3">
@@ -144,11 +144,11 @@
         {{-- </div> --}}
         <div class="p-4">
            <div class="row ">
-            <div class="col-auto d-flex setBtn">
+            <div class="col-auto d-flex set-create-btn">
                 <div class="me-2">
-                    <a href="{{ route('tackback.stores.cancel') }}" class="btn btn-secondary store-btn-size" style="background-color: #ffffff; color: #000000;">Cancel</a>
+                    <a href="{{ route('tackback.stores.cancel') }}" class="btn btn-secondary create-store-btn-size" style="background-color: #ffffff; color: #000000;">Cancel</a>
                 </div>
-                <button type="submit" class="btn btn-secondary store-btn-size">Next</button>
+                <button type="submit" class="btn btn-secondary create-store-btn-size">Next</button>
             </div>
         </div>
 
@@ -164,14 +164,4 @@
         });
     </script>
 @endpush
-<style>
-    .setBtn{
-        margin-left: 750px;
-    }
-    .store-btn-size {
-        padding: 7px 30px !important;
-    }
-    .error-required-msg{
-        padding-left: 0px !important;
-    }
-</style>
+
