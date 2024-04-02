@@ -85,12 +85,11 @@
                                 <a href="{{ route('admin.stores.shipment-detail', ['id' => $store->id]) }}">
                                     <i class="bi bi-chevron-right shipment-list-status-icons"></i>
                                 </a>
-                            @else
-                            @if ($store->status == 2)
+                            {{-- @if ($store->status == 2)
                             Partially opened
                                 <a href="{{ route('admin.stores.shipment-detail', ['id' => $store->id]) }}">
                                     <i class="bi bi-chevron-right shipment-list-status-icons"></i>
-                                </a>
+                                </a> --}}
                             @else
                             Opened
                                 <a href="{{ route('admin.stores.shipment-detail', ['id' => $store->id]) }}">
