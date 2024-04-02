@@ -298,6 +298,7 @@
         $(document).ready(function() {
             $('#dataTable').DataTable();
         });
+        alert('good');
         $(document).ready(function() {
             $('#addMaterialBtn').click(function() {
                 var newMaterialField = '<div class="row mb-3 material-field">' +

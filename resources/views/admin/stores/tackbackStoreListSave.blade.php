@@ -19,7 +19,7 @@
                     <form id="filterForm" method="GET" action="{{ route('admin.stores.brand-filter') }}">
                         <div class="d-flex">
                             <div class="col-md-10">
-                                <select class="form-select" name="brand_id" aria-label="Default select example" id="brand_id">
+                                <select class="form-select" data-route="{{ route('admin.stores.brand-filter') }}" name="brand_id" aria-label="Default select example" id="brand_id">
                                    <option value="0">Select Brand</option>
                                         @foreach ($brands as $brand)
                                             <option value="{{ $brand->id }}">{{ $brand->name }}</option>
@@ -37,7 +37,7 @@
                     </button> --}}
                     <div class="col-md-4">
                          <fieldset class="form-group position-relative mb-0 search_form setfield-space">
-                        <input type="text" class="form-control" placeholder="Search" id="searchQuery1"/>
+                        <input type="text" class="form-control" data-route="{{ route('admin.stores.search-store') }}" placeholder="Search" id="searchQuery1"/>
                         <div class="form-control-position form_input_items mt_8">
                             <i class="ft-x font-medium-5 cross_image cursor-pointer"></i>
                             <i alt="icon" class="ft-search font-medium-5 cursor-pointer pr_8"></i>
@@ -82,6 +82,12 @@
                         <td style="color: {{ $store->status == 0 ? 'red' : 'black' }}" class="shipment-list-status-icons">
                             @if ($store->status == 0)
                             Unopened
+                                <a href="{{ route('admin.stores.shipment-detail', ['id' => $store->id]) }}">
+                                    <i class="bi bi-chevron-right shipment-list-status-icons"></i>
+                                </a>
+                            @else
+                            @if ($store->status == 2)
+                            Partially opened
                                 <a href="{{ route('admin.stores.shipment-detail', ['id' => $store->id]) }}">
                                     <i class="bi bi-chevron-right shipment-list-status-icons"></i>
                                 </a>
@@ -136,105 +142,5 @@
 @endsection
 
 @push('scripts')
-    <script>
-            document.getElementById('brand_id').addEventListener('input', function() {
-            var brandId = this.value;
-            if (brandId) {
-                // Send AJAX request
-                $.ajax({
-                    url: '{{ route("admin.stores.brand-filter") }}',
-                    method: 'GET',
-                    data: { brand_id: brandId },
-                    success: function(response) {
-                        console.log(response);
-                        // Iterate over the response data and populate the table rows
-                        $('#dataTable tbody').empty();
-                        if(response.length > 0){
-                             $.each(response, function(index, data) {
-                            var newRow = '<tr>' +
-                                '<td>' + data.shipment_id + '</td>' +
-                                '<td>' + data.created_store_date_time + '</td>' +
-                                '<td>' + data.trackback_product_store_type + '</td>' +
-                                '<td>' + data.total_weight + '</td>' +
-                                '<td>' + '--' +'</td>' +
-                                '<td>' + '--' + '</td>' +
-                                // Add more table data as needed
-                                '</tr>';
-                            $('#dataTable tbody').append(newRow);
-                            });
-                        } else {
-                            var newRow =    `<tr>
-                            <td colspan="7" class="text-center">No record Found</td>
-                            </tr>`
-                            $('#dataTable tbody').append(newRow);
-                        }
-                        
-                        // Handle success response
-                        // You can update the table or display the filtered data here
-                    },
-                    error: function(xhr, status, error) {
-                        // Handle error response
-                    }
-                });
-            }
-        });
-
-        // Function to perform AJAX search request
-        function search() {
-            var query = $('#searchQuery1').val();
-            if(!query){
-                query = 0;
-            }
-            console.log('check data---------', query);
-            // Send AJAX request
-            $.ajax({
-                url: '{{ route("admin.stores.search-store") }}',
-                method: 'GET',
-                data: { query: query },
-                success: function(response) {
-                    console.log('check data1111============');
-                    // Update table with search results
-                    updateTable(response);
-                },
-                error: function(xhr, status, error) {
-                    console.error(error);
-                }
-            });
-           
-        }
-
-        // Function to update table with search results
-        function updateTable(data) {
-            $('#dataTable tbody').empty();
-            // Clear existing table rows
-                console.log('wow data========', data);
-                if(data.length > 0){
-                    // Add new rows for each search result
-                    $.each(data, function(index, item) {
-                        var row = '<tr>' +
-                            '<td>' + item.shipment_id + '</td>' +
-                            '<td>' + item.created_store_date_time + '</td>' +
-                            '<td>' + item.trackback_product_store_type + '</td>' +
-                            '<td>' + item.total_weight + '</td>' +
-                            '<td>--</td>' +
-                            '<td>--</td>' +
-                            '</tr>';
-                        $('#dataTable tbody').append(row);
-                    });
-                    // Add pagination links if available
-                    // $('#paginationLinks').html(data.links);
-                } else {
-                    var newRow =    `<tr>
-                        <td colspan="7" class="text-center">No record Found</td>
-                        </tr>`
-                    $('#dataTable tbody').append(newRow);
-                }
-            
-        }
-        $(document).ready(function() {
-            $('#searchQuery1').on('input', function() {
-                search();
-            });
-        });
-        </script>
+         <script src="{{ asset('js/customShipmentList.js') }}"></script>
 @endpush

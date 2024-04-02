@@ -78,7 +78,8 @@
 }
 
 .shipment-list-set-alingment-icons {
-    margin-left: 49px;
+    /* margin-left: 49px; */
+    margin-left: 16px;
 }
 
 /* css for shipment list pages end*/

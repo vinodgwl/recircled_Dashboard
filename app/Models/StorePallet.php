@@ -54,4 +54,36 @@ class StorePallet extends Model
     {
         return $this->belongsTo(TackkbackStore::class, 'tackkback_store_id');
     }
+
+     /**
+     * Accessor method to get the count of opened boxes.
+     */
+    public function getOpenCountAttribute()
+    {
+        return $this->storeBoxes()->where('status', 1)->count();
+    }
+
+    /**
+     * Accessor method to get the count of unopened boxes.
+     */
+    public function getUnopenedCountAttribute()
+    {
+        return $this->storeBoxes()->where('status', 0)->count();
+    }
+
+    /**
+     * Accessor method to get the total count of boxes.
+     */
+    public function getTotalCountAttribute()
+    {
+        return $this->storeBoxes()->count();
+    }
+
+    /**
+     * Relationship to fetch related store boxes.
+     */
+    public function storeBoxes()
+    {
+        return $this->hasMany(StoreBox::class);
+    }
 }

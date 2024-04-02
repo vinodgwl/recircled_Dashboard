@@ -220,6 +220,37 @@ class TackbackStoreController extends Controller
          $StorePallet = StorePallet::where('tackback_store_id',  $id)->paginate($perPage);
          $status0Count = StorePallet::where('tackback_store_id', $id)->where('status', 0)->count();
          $status1Count = StorePallet::where('tackback_store_id', $id)->where('status', 1)->count();
+
+        //  new query is added for showing count open and unopened
+
+        // $storePallets = StorePallet::select('store_pallets.*')
+        //     ->selectRaw('COUNT(store_boxes.id) AS open_count')
+        //     ->selectRaw('SUM(CASE WHEN store_boxes.status = 0 THEN 1 ELSE 0 END) AS open_count')
+        //     ->selectRaw('SUM(CASE WHEN store_boxes.status = 1 THEN 1 ELSE 0 END) AS unopened_count')
+        //     ->leftJoin('store_boxes', 'store_pallets.id', '=', 'store_boxes.store_pallet_id')
+        //     ->where('store_pallets.tackback_store_id', $id)
+        //     ->groupBy('store_pallets.id')
+        //     ->paginate($perPage);
+        $storePallets = StorePallet::select('store_pallets.*')
+        ->selectSub(function ($query) {
+            $query->selectRaw('COUNT(id) AS open_count')
+                ->from('store_boxes')
+                ->whereColumn('store_boxes.store_pallet_id', 'store_pallets.id')
+                ->where('store_boxes.status', 0);
+        }, 'open_count')
+        ->selectSub(function ($query) {
+            $query->selectRaw('COUNT(id) AS unopened_count')
+                ->from('store_boxes')
+                ->whereColumn('store_boxes.store_pallet_id', 'store_pallets.id')
+                ->where('store_boxes.status', 1);
+        }, 'unopened_count')
+        ->selectSub(function ($query) {
+            $query->selectRaw('COUNT(id) AS total_count')
+                ->from('store_boxes')
+                ->whereColumn('store_boxes.store_pallet_id', 'store_pallets.id');
+        }, 'total_count')
+        ->where('store_pallets.tackback_store_id', $id)
+        ->paginate($perPage);
           // Append query parameters to pagination links
             $StorePallet->appends($request->query());
 
@@ -378,7 +409,11 @@ class TackbackStoreController extends Controller
 
         // Save the box product
         $boxProduct->save();
-        return redirect()->back()->with('success', 'Box added successfully.');
+        $box = StoreBox::findOrFail($request->box_id);
+        $box->update([
+            'status' => 1
+        ]);
+        return redirect()->back()->with('success', 'Product added successfully.');
         
     }
 
