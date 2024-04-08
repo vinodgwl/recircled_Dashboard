@@ -26,18 +26,18 @@
                             <label for="exampleFormControlInput1" class="form-label">Tackback Type</label>
                             <div class="col-md-2">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="trackback_product_store_type" value="Warehouse Bulk" id="flexRadioDefault1" {{ isset($prevois_store_data['trackback_product_store_type']) &&$prevois_store_data['trackback_product_store_type'] === 'Warehouse Bulk' ? 'checked' : '' }}>
+                                    <input class="form-check-input" type="radio" name="trackback_type_store_customer_warehouse" value="Warehouse Bulk" id="flexRadioDefault1" {{ isset($prevois_store_data['trackback_type_store_customer_warehouse']) &&$prevois_store_data['trackback_type_store_customer_warehouse'] === 'Warehouse Bulk' ? 'checked' : '' }}>
                                     <label class="form-check-label" for="flexRadioDefault1">
                                         Warehouse Bulk
                                     </label>
                                 </div>
-                                @error('trackback_product_store_type')
+                                @error('trackback_type_store_customer_warehouse')
                                     <span class="alert text-danger create-error-required-msg">{{ $message }}</span>
                                  @enderror
                             </div>
                             <div class="col-md-2">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="trackback_product_store_type" value="Customer" id="flexRadioDefault1" {{ isset($prevois_store_data['trackback_product_store_type']) &&$prevois_store_data['trackback_product_store_type'] === 'Customer' ? 'checked' : '' }}>
+                                    <input class="form-check-input" type="radio" name="trackback_type_store_customer_warehouse" value="Customer" id="flexRadioDefault1" {{ isset($prevois_store_data['trackback_type_store_customer_warehouse']) &&$prevois_store_data['trackback_type_store_customer_warehouse'] === 'Customer' ? 'checked' : '' }}>
                                     <label class="form-check-label" for="flexRadioDefault1">
                                         Customer
                                     </label>
@@ -45,7 +45,7 @@
                             </div>
                             <div class="col-md-2">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="trackback_product_store_type" value="Store" id="flexRadioDefault1" {{ isset($prevois_store_data['trackback_product_store_type']) && $prevois_store_data['trackback_product_store_type'] === 'Store' ? 'checked' : '' }}>
+                                    <input class="form-check-input" type="radio" name="trackback_type_store_customer_warehouse" value="Store" id="flexRadioDefault1" {{ isset($prevois_store_data['trackback_type_store_customer_warehouse']) && $prevois_store_data['trackback_type_store_customer_warehouse'] === 'Store' ? 'checked' : '' }}>
                                     <label class="form-check-label" for="flexRadioDefault1">
                                         Store
                                     </label>
@@ -74,9 +74,9 @@
                                  @enderror
                             </div>
                             <div class="col-md-2">
-                                <label for="shipment_id" class="form-label">Shipment ID</label>
-                                <input type="text" class="form-control" placeholder="Shipment ID" value="{{ $prevois_store_data['shipment_id'] ?? '' }}" name="shipment_id">
-                                @error('shipment_id')
+                                <label for="shipment_information_id" class="form-label">Shipment ID</label>
+                                <input type="text" class="form-control" placeholder="Shipment ID" value="{{ $prevois_store_data['shipment_information_id'] ?? '' }}" name="shipment_information_id">
+                                @error('shipment_information_id')
                                     <span class="alert text-danger create-error-required-msg">{{ $message }}</span>
                                  @enderror
                             </div>
@@ -111,12 +111,12 @@
                         <div class="row">
                             <div class="col-md-2">
                                 <label for="exampleFormControlInput1" class="form-label">Type (pallet/Box)</label>
-                                <select class="form-select" name="type" aria-label="Default select example">
+                                <select class="form-select" name="box_type" aria-label="Default select example">
                                 <option value=""selected>Select</option>
-                                    <option value="pallet" {{ old('type', $prevois_store_data['type'] ?? '') == 'pallet' ? 'selected' : '' }}>Pallet</option>
-                                    <option value="box" {{ old('type', $prevois_store_data['type'] ?? '') == 'box' ? 'selected' : '' }}>Box</option>
+                                    <option value="pallet" {{ old('box_type', $prevois_store_data['box_type'] ?? '') == 'pallet' ? 'selected' : '' }}>Pallet</option>
+                                    <option value="box" {{ old('box_type', $prevois_store_data['box_type'] ?? '') == 'box' ? 'selected' : '' }}>Box</option>
                                 </select>
-                                @error('type')
+                                @error('box_type')
                                     <span class="alert text-danger create-error-required-msg">{{ $message }}</span>
                                  @enderror
                             </div>
@@ -136,7 +136,7 @@
                             </div>
                            {{-- <div class="col-md-3">
                                 <label for="exampleFormControlInput1"  class="form-label">Shipping Carrier Name</label>
-                                <input type="text" class="form-control" name="shipment_id" id="exampleFormControlInput1">
+                                <input type="text" class="form-control" name="shipment_information_id" id="exampleFormControlInput1">
                             </div> --}}
                         </div>
                     </div>

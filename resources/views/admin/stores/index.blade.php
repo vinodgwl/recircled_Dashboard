@@ -25,7 +25,7 @@
                         <div class="row">
                             <div class="col-md-3">
                                <label class="form-check-label" for="flexRadioDefault1">Tackback Type:</label>
-                               <span class="fw-bold">{{$latestStoreDetail->trackback_product_store_type}}</span>
+                               <span class="fw-bold">{{$latestStoreDetail->trackback_type_store_customer_warehouse}}</span>
                             </div>
                             <div class="col-md-2">
                                 <label class="form-check-label" for="flexRadioDefault1">Parent Brand:</label>
@@ -33,7 +33,7 @@
                             </div>
                             <div class="col-md-2">
                                 <label class="form-check-label" for="flexRadioDefault1">Shipment ID:</label>
-                                <span class="fw-bold">{{$latestStoreDetail->shipment_id}}</span>
+                                <span class="fw-bold">{{$latestStoreDetail->shipment_information_id}}</span>
                             </div>
                              <div class="col-md-2">
                                 <label class="form-check-label" for="flexRadioDefault1">Pallet Quantity</label>
@@ -49,7 +49,7 @@
                    <div class="row pallet-generate-detailtack">
                             <div class="col-md-3 pl-5">
                                 <label class="form-check-label" for="flexRadioDefault1">Date & Time</label>
-                               <span class="fw-bold">{{ \Carbon\Carbon::parse($latestStoreDetail->created_store_date_time)->format('d/m/y h:i:s A') }}</span>
+                               <span class="fw-bold">{{ \Carbon\Carbon::parse($latestStoreDetail->shipment_created_at)->format('d/m/y h:i:s A') }}</span>
                                 {{-- <span class="fw-bold">{{ $latestStoreDetail->created_store_date_time->format('d/m/y h:i:s A') }}</span> --}}
                             </div>
                         </div>
@@ -64,18 +64,19 @@
             <thead>
                 <tr>
                     <th>Pallet No.</th>
-                    <th>Pallet Unique Id</th>
+                    <th>Pallet generated Id</th>
                     <th>Sub Brand</th>
                     <th>Weight (lbs)</th>
                 </tr>
             </thead>
             <tbody>
+                 @php $serial = 1; @endphp
                  @foreach ($stores as $store)
                     <tr>
-                        <td>{{ $store->id }}</td>
-                        <td>{{ $store->pallet_unique_id }}</td>
+                        <td>{{ $serial }}</td>
+                        <td>{{ $store->pallet_gen_code }}</td>
                         <td><div class="col-md-6">
-                                <select class="form-select" name="store_sub_brand[]" aria-label="Default select example">
+                                <select class="form-select" name="sub_brand[]" aria-label="Default select example">
                                     <option value="">N/A</option>
                                     <option value="golf puma">Golf puma</option>
                                     <option value="tretorn puma">Tretorn puma</option>
@@ -85,9 +86,10 @@
                                 <input type="text" class="form-control pallet-weight-input" min="1"  placeholder="Weight" value="{{ $store->pallet_weight }}" name="pallet_weight[]" id="exampleFormControlInput1" required>
                             </div></td>
                     </tr>
-                    <input type="hidden" name="store_ids[]" id="store_ids" value="{{ $store->id }}">
-                    <input type="hidden" name="shipment_id" id="another_hidden_field" value="{{$store->shipment_id}}">
-                @endforeach 
+                    <input type="hidden" name="store_ids[]" id="store_ids" value="{{ $store->pallet_id }}">
+                    <input type="hidden" name="shipment_information_id" id="another_hidden_field" value="{{$store->shipment_information_id}}">
+                    @php $serial++; @endphp
+                    @endforeach 
                 @if ($stores->isEmpty())
                 <tr>
                     <td colspan="7" class="text-center">No record Found</td>
@@ -129,8 +131,8 @@
                 <div class="col-auto">
                     {{-- <a href="{{ route('admin.stores.create') }}" class="btn btn-secondary me-2">Back</a> --}}
                     <button type="button" onclick="showToastr()" class="btn btn-secondary me-2 pallet-generate-setBtnColor">Cancel</button>
-                    <button type="submit" id="submitBtn" class="btn btn-secondary">Save</button>
-                    <button type="button" id="saveAndOpenBtn" onclick="saveAndOpen()" class="btn btn-secondary">Save & Open</button>
+                    <button type="submit" id="submitBtn" class="btn btn-secondary">Save & Submit for Approval</button>
+                    {{-- <button type="button" id="saveAndOpenBtn" onclick="saveAndOpen()" class="btn btn-secondary">Save & Open</button> --}}
                 </div>
              </div>
         </div>

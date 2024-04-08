@@ -5,14 +5,20 @@
     <div class="container-fluid">
         {{-- <div class="card "> --}}
             <div class="card-header">
+               
                <div class="mt-2 pallet-box-added-set-btn-alingments">
-                 <a href="{{ route('admin.stores.shipment-detail', ['id' => $StorePallet->tackback_store_id ]) }}" class="btn btn-secondary">
-                        Back
+                All Tackback / Shipment ID: {{$storesList->shipment_information_id}} 
+               </div>
+               <div class="mt-2 pallet-box-added-set-btn-alingments">
+                 <a href="{{ route('admin.stores.shipment-detail', ['id' => $StorePallet->shipment_id ]) }}" class="btn btn-secondary">
+                       <i class="bi bi-arrow-left"></i>
                  </a>
+                 <span> Open Shipment</span>
                </div>
                <div class="mt-2 pallet-box-added-set-btn-alingments">
-                All Tackback / Shipment ID: {{$storesList->shipment_id}} / Pallet ID: {{$StorePallet->pallet_unique_id}}
+                  Pallet ID: {{$StorePallet->pallet_gen_code}}
                </div>
+               
             </div>
             @if (session('success'))
                 <div id="successMessage" class="alert alert-success">
@@ -29,7 +35,7 @@
                     <div class="p-3">
                         <div class="row">
                             <div class="col-md-12">
-                                <h4 class="fw-bold mb-2">Pallet ID: {{$StorePallet->pallet_unique_id}}</h4>
+                                <h4 class="fw-bold mb-2">Pallet ID: {{$StorePallet->pallet_gen_code}}</h4>
                             </div>
                             <div class="col-md-2">
                                 <label class="form-check-label" for="flexRadioDefault1">Parent Brand:</label>
@@ -37,11 +43,11 @@
                             </div>
                             <div class="col-md-2">
                                 <label class="form-check-label" for="flexRadioDefault1">Sub-Brand:</label>
-                                <span class="fw-bold">{{$StorePallet->store_sub_brand}}</span>
+                                <span class="fw-bold">{{$StorePallet->sub_brand}}</span>
                             </div>
                             <div class="col-md-2">
                                 <label class="form-check-label" for="flexRadioDefault1">Tackback Type:</label>
-                                <span class="fw-bold">{{$storesList->trackback_product_store_type}}</span>
+                                <span class="fw-bold">{{$storesList->trackback_type_store_customer_warehouse}}</span>
                             </div>
                             <div class="col-md-2">
                                 <label class="form-check-label" for="flexRadioDefault1">Pallet weight:</label>
@@ -62,7 +68,7 @@
                            
                             <div class="col-md-3">
                                 <label class="form-check-label" for="flexRadioDefault1">Date & Time</label>
-                                <span class="fw-bold"> {{$StorePallet->created_store_shipment_date_time}}</span>
+                                <span class="fw-bold"> {{$StorePallet->pallet_created_at}}</span>
                             </div>
                              <div class="col-md-2">
                                 <label class="form-check-label" for="flexRadioDefault1">Total Box Quantity:</label>

@@ -1,6 +1,7 @@
 <style>
         .sidebar {
-            background-color: #343a40; /* Sidebar background color */
+            /*background-color: #343a40;  Sidebar background color */
+            background-color: #eeeeef;
             color: #fff; /* Text color */
             height: 100%;
             min-height: 640px;
@@ -12,7 +13,9 @@
         }
 
         .sidebar .nav-link.active {
-            background-color: #007bff; /* Active link background color */
+           /* background-color: #007bff;  Active link background color */
+           background-color: #565e64;
+           color: #fff !important;
         }
         .form-check-single {
             display: grid;
@@ -23,22 +26,29 @@
 <div class="sidebar">
     <ul class="nav flex-column">
         <li class="nav-item">
-            <a class="nav-link {{ Request::is('dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">
+            <a class="nav-link {{ request()->is('admin/dashboard*') ? 'active' : '' }} text-dark" href="{{ route('admin.dashboard') }}">
                 Dashboard
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link {{ Request::is('users') ? 'active' : '' }}" href="{{ route('admin.tackbacklist') }}">
+            <a class="nav-link {{ request()->is('admin/tackback') ? 'active' : '' }} text-dark" href="{{ route('admin.tackbacklist') }}">
                 Tackback Products
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link {{ Request::is('users') ? 'active' : '' }}" href="{{ route('admin.stores.create') }}">
-                Tackback Store
+            {{-- admin/tackback-store/create* --}}
+            {{-- {{ request()->is('admin/tackback-store/*') ? 'active' : '' }} --}}
+            <a class="nav-link {{ request()->is('admin/tackback-store/*') ? 'active' : '' }} text-dark" href="{{ route('admin.stores.create') }}">
+                {{-- Tackback Store --}}
+                Sorting
+            </a>
+            <a class="nav-link {{ request()->is('admin/tackback-shipment-list/save-list') ? 'active' : '' }} text-dark" href="{{ route('admin.stores.saveList') }}">
+                {{-- Tackback Store --}}
+                Shipment List
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link {{ Request::is('users') ? 'active' : '' }}" href="{{ route('brands.create') }}">
+            <a class="nav-link {{ request()->is('admin/brands/create') ? 'active' : '' }} text-dark" href="{{ route('brands.create') }}">
                 Brand
             </a>
         </li>

@@ -4,15 +4,31 @@
 @section('content')
     <div class="container-fluid">
         {{-- <div class="card "> --}}
-            <div class="card-header">
+            {{-- <div class="card-header">
                 <div class="mt-2 pallet-list-set-btn-alingments">
                  <a href="{{ route('admin.stores.saveList') }}" class="btn btn-secondary">
                         Back
                  </a>
                </div>
                <div class="mt-2 pallet-list-set-btn-alingments">
-                 All Tackback / Shipment ID: {{$storesList->shipment_id}}
+                 All Tackback / Shipment ID: {{$storesList->shipment_information_id}}
                </div>
+            </div> --}}
+            <div class="card-header">
+               
+               <div class="mt-2 pallet-box-added-set-btn-alingments">
+                Sorting / Shipment ID: {{$storesList->shipment_information_id}} 
+               </div>
+               <div class="mt-2 pallet-box-added-set-btn-alingments">
+                 <a href="{{ route('admin.stores.saveList') }}" class="btn btn-secondary">
+                       <i class="bi bi-arrow-left"></i>
+                 </a>
+                 <span> Open Shipment</span>
+               </div>
+               <div class="mt-2 pallet-box-added-set-btn-alingments">
+                  Pallet ID: {{$storesList->shipment_information_id}}
+               </div>
+               
             </div>
             @if (session('success'))
                 <div id="successMessage" class="alert alert-success">
@@ -29,7 +45,7 @@
                     <div class="p-3">
                         <div class="row">
                             <div class="col-md-12">
-                                <h4 class="fw-bold mb-2">Shipment ID: {{$storesList->shipment_id}}</h4>
+                                <h4 class="fw-bold mb-2">Shipment ID: {{$storesList->shipment_information_id}}</h4>
                             </div>
                             <div class="col-md-2">
                                 <label class="form-check-label" for="flexRadioDefault1">Brand:</label>
@@ -37,7 +53,7 @@
                             </div>
                             <div class="col-md-2">
                                 <label class="form-check-label" for="flexRadioDefault1">Tackback Type:</label>
-                                <span class="fw-bold">{{$storesList->trackback_product_store_type}}</span>
+                                <span class="fw-bold">{{$storesList->trackback_type_store_customer_warehouse}}</span>
                             </div>
                             <div class="col-md-2">
                                 <label class="form-check-label" for="flexRadioDefault1">Total Pallet:</label>
@@ -71,13 +87,15 @@
                 </tr>
             </thead>
             <tbody>
+                @php $serial = 1; @endphp
                  @foreach ($StorePallet as $store)
                     <tr>
-                        <td>{{ $store->id }}</td>
-                        <td>{{$store->pallet_unique_id }}</td>
+                        <td>{{ $serial }}</td> <!-- Serial number -->
+                        <td>{{$store->pallet_gen_code }}</td>
                         <td>{{ $store->pallet_weight }} lbs</td>
-                         <td>{{$store->store_sub_brand}}</td>
-                          <td>{{ $store->open_count }}/{{ $store->total_count }}</td>
+                         <td>{{$store->sub_brand}}</td>
+                          {{-- <td>{{ $store->open_count }}/{{ $store->total_count }}</td> --}}
+                           <td>--</td>
                          {{-- <td>{{ $store->status_1_count + $store->status_0_count }} ({{$store->status_1_count}}/{{ $store->status_1_count + $store->status_0_count }})</td> --}}
                        {{-- <td style="color: {{ $store->status == 0 ? 'red' : 'black' }}">
                             @if ($store->status == 0)
@@ -89,31 +107,35 @@
                         </td> --}}
                         <td style="color: {{ $store->status == 0 ? 'red' : 'black' }}" class="pallet-list-status-icons">
                             @if ($store->status == 0)
-                            Unopened
-                                <a data-bs-toggle="modal"
+                           <span class="unopned-pallet-list-status"> Unopened</span>
+                                <a data-bs-toggle="modal" class="text-decoration-none"
                                 data-bs-target="#exampleModal"
-                                data-store-id="{{ $store->id }}"
-                                data-pallet-id="{{ $store->pallet_unique_id }}"
+                                data-store-id="{{ $store->pallet_id }}"
+                                data-pallet-id="{{ $store->pallet_gen_code }}"
                                 data-pallet-weight="{{ $store->pallet_weight }}"
-                                data-sub-brands="{{ $store->store_sub_brand }}"
+                                data-sub-brands="{{ $store->sub_brand }}"
                                 href="#" onclick="clearBoxQuantityData(event)">
+                                <span class="pallet-list-status-icons">Open Pallet</span>
                                     <i class="bi bi-chevron-right pallet-list-status-icons"></i>
                                 </a>
                             @else
-                            Opened
-                                <a class="shipment-list-set-alingment-icons" data-bs-toggle="modal"
-                                data-bs-target="#exampleModal"
-                                data-store-id="{{ $store->id }}"
-                                data-pallet-id="{{ $store->pallet_unique_id }}"
+                            <span class="unopned-pallet-list-status">Opened</span>
+                                <a class="shipment-list-set-alingment-icons text-decoration-none" data-bs-toggle="modal"
+                                data-bs-target="#exampleModal1"
+                                 {{-- data-box-id="{{ $singlePalletBox->box_id }}" --}}
+                                data-pallet-id="{{ $store->pallet_id }}"
+                                data-pallet-gen-code="{{ $store->pallet_gen_code }}"
                                 data-pallet-weight="{{ $store->pallet_weight }}"
-                                data-sub-brands="{{ $store->store_sub_brand }}"
-                                href="#" onclick="clearBoxQuantityData(event)">
+                                data-sub-brands="{{ $store->sub_brand }}"
+                                href="#" onclick="clearBoxData(event)">
+                                <span class="pallet-list-status-icons">Open Box</span>
                                      <i class="bi bi-chevron-right pallet-list-status-icons"></i>
                                 </a>
                             @endif
                         </td>
                     </tr>
-                    <input type="hidden" name="store_ids[]" id="store_ids" value="{{ $store->id }}">
+                    <input type="hidden" name="store_ids[]" id="store_ids" value="{{ $store->pallet_id }}">
+                    @php $serial++; @endphp
                 @endforeach 
                 @if ($StorePallet->isEmpty())
                 <tr>
@@ -153,13 +175,14 @@
             </span>
             </div>
         </div>
+        {{-- model for open pallet --}}
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
              <form id="myForm" method="post" action="{{ route('tackbackStore.box.creates') }}">
                 @csrf
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title fw-bold" id="exampleModalLabel">Add Pallet Details</h5>
+                        <h5 class="modal-title fw-bold" id="exampleModalLabel">Open Pallet</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -187,7 +210,18 @@
                             
                         </div>
                         <input type="hidden" name="storeId" id="storeId">
-                        <h4 class="mt-4 fw-bold">Pallet Packaging Material</h4>
+                        {{-- <h4 class="mt-4 fw-bold">Pallet Packaging Material</h4> --}}
+                         <div class="row">
+                            <div class="col-md-9">
+                                 <h4 class="mt-4 fw-bold">Pallet Packaging Material</h4>
+                            </div>
+                            <div class="col-md-3 mt-3">
+                                  <button style="margin-left: 10px" type="button" id="addMaterialBtn"
+                                class="btn btn-secondary">
+                                <i class="bi bi-plus"></i> Add New Material
+                            </button>
+                            </div>
+                         </div>
                         <div class="row mt-4">
                             <div id="materialFields">
                                 <div class="row mb-3 material-field">
@@ -224,13 +258,128 @@
                     </div>
                     <div class="modal-footer">
                         <div class="col-md-6 text-left"> <!-- This column takes up half of the width -->
-                            <button style="margin-left: -149px" type="button" id="addMaterialBtn"
+                            {{-- <button style="margin-left: -84px" type="button" id="addMaterialBtn"
+                                class="btn btn-secondary">
+                                <i class="bi bi-plus"></i> Add New Material
+                            </button> --}}
+                        </div>
+                        <button type="button" class="btn btn-secondary me-2 pallet-generate-setBtnColor" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-secondary">Save & Open Box</button>
+                        <button type="submit" class="btn btn-secondary">Save </button>
+                    </div>
+                </div>
+            </div>
+             </form>
+        </div>
+        {{-- model for open box --}}
+        <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+             <form id="updatedmyForm" method="post" action="{{ route('tackbackStore.box.updated') }}">
+                @csrf
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title fw-bold" id="exampleModalLabel">Open Box </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                Pallet ID: <span class="fw-bold" id="BoxpalletId"></span>
+                            </div>
+                            <div class="col-md-4">
+                                Sub Brands: <span class="fw-bold" id="BoxsubBrands"></span>
+                            </div>
+                             <div class="col-md-4">
+                                {{-- @if(isset($singlePalletBox))
+                                    @endif --}}
+                                    Box Id <span class="fw-bold" id="BoxpalletWeight1">RIE7793030ZNSD-BOX1</span>
+                            </div>
+                        </div>
+                        <div class="row mt-4">
+                            <div >
+                                <div class="row mb-3 material-field">
+                                    <h4 class="fw-bold">Add Box Detail</h4>
+                                    <div class="col-md-4">
+                                        <label for="logo" class="form-label">weight (lbs)</label>
+                                        <input type="number" class="form-control" name="box_weight" id="box_weight"
+                                            placeholder="Weight">
+                                             <div id="boxWeightValidation" class="text-danger"></div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="exampleFormControlInput1" class="form-label">Product Category</label>
+                                        <select name="product_category" id="product_category" class="form-select" aria-label="Default select example">
+                                            <option selected value="">Select Product</option>
+                                            <option value="cloth">Clothes</option>
+                                            <option value="plastic">Plastic</option>
+                                            <option value="wood">Wood</option>
+                                        </select>
+                                         <div id="productCategoryValidation" class="text-danger"></div>
+                                    </div>
+                                    
+                                    <div class="col-md-4">
+                                        <label for="exampleFormControlInput1" class="form-label">Pre Consumer</label>
+                                        <select name="pre_consumer" id="pre_consumer" class="form-select" aria-label="Default select example">
+                                            <option value="yes">Yes</option>
+                                            <option value="no">No</option>
+                                        </select>
+                                    </div>
+                                   <input type="hidden" name="palletId" id="palletId">
+                                     {{-- <div id="errorMessage1" class="text-danger" style="display: none;"></div> --}}
+                                </div>
+                                <!-- Dynamic material fields will be added here -->
+                            </div>
+                        </div>
+                         <div class="row">
+                            <div class="col-md-9">
+                                 <h4 class="mt-4 fw-bold">Box Packaging Material</h4>
+                            </div>
+                            <div class="col-md-3 mt-3">
+                                  <button style="margin-left: 10px" type="button" id="addMaterialBtn1"
                                 class="btn btn-secondary">
                                 <i class="bi bi-plus"></i> Add New Material
                             </button>
+                            </div>
+                         </div>
+                       
+                        <div class="row mt-4">
+                            <div id="materialFields1">
+                                <div class="row mb-3 material-field">
+                                    <div class="col-md-4">
+                                        <label for="logo" class="form-label">Material Type:</label>
+                                        <select class="form-select" name="material_type1[]">
+                                            <option value="">material type</option>
+                                            <option value="paper">Paper</option>
+                                            <option value="wood">Wood</option>
+                                            <option value="plastic">Plastic</option>
+                                            <option value="shrink-wrap">Shrink-Wrap</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="logo" class="form-label">Material weight (lbs)</label>
+                                        <input type="number" class="form-control" name="material_weight1[]"
+                                            placeholder="Weight">
+                                    </div>
+                                    <div class="col-auto">
+                                        <button class="btn btn-danger cancel-btn" type="button" style="background-color: transparent; border: none;">
+                                            <i class="bi bi-x" style="font-size: 1.5rem;"></i>
+                                        </button>
+
+                                        {{-- <button class="btn btn-danger cancel-btn" type="button">
+                                            <i class="bi bi-x"></i>
+                                        </button> --}}
+                                    </div>
+                                </div>
+                                <!-- Dynamic material fields will be added here -->
+                            </div>
                         </div>
-                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="col-md-6 text-left"> <!-- This column takes up half of the width -->
+                           
+                        </div>
+                        <button type="button" class="btn btn-secondary me-2 pallet-generate-setBtnColor" data-bs-dismiss="modal">Cancel</button>
                         <button type="submit" class="btn btn-secondary">Save & Continue</button>
+                        {{-- <button type="submit" class="btn btn-secondary">Save </button> --}}
                     </div>
                 </div>
             </div>

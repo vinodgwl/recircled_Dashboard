@@ -35,7 +35,7 @@
                         class=" btn btn-secondary">
                         New tackback
                     </button> --}}
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                          <fieldset class="form-group position-relative mb-0 search_form setfield-space">
                         <input type="text" class="form-control" data-route="{{ route('admin.stores.search-store') }}" placeholder="Search" id="searchQuery1"/>
                         <div class="form-control-position form_input_items mt_8">
@@ -44,10 +44,28 @@
                         </div>
                     </fieldset>
                     </div>
-                    <button id="close-edit-category" type="button"
+                    {{-- <button id="close-edit-category" type="button"
                         class=" btn btn-secondary">
                         New tackback
+                    </button> --}}
+                    <div class="dropdown">
+                    <div class="set-category-filter" style="position: relative; left: -78px; top:3px">
+                        <button style="background-color: transparent;
+    border: 0;
+    color: #000; background-image:url('https://spiritpack-dev.s3.amazonaws.com/PrintArea/ic_1712126992406.png');     background-size: contain;
+    width: 15px;
+    height: 15px;" class="btn btn-secondary dropdown-toggle shipment-list-category-filter-btn" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <ul class="dropdown-menu" aria-labelledby="filterDropdown">
+                        <li><a class="dropdown-item" href="#">Option 1</a></li>
+                        <li><a class="dropdown-item" href="#">Option 2</a></li>
+                        <li><a class="dropdown-item" href="#">Option 3</a></li>
+                        <!-- Add more filter options here -->
+                    </ul>
                     </button>
+                     <span>Filter</span>
+                    </div>
+                   
+                </div>
                 </div>
         </div>
        
@@ -65,9 +83,9 @@
             <tbody>
                  @foreach ($stores as $store)
                     <tr>
-                        <td>{{ $store->shipment_id }}</td>
-                        <td>{{ \Carbon\Carbon::parse($store->created_store_date_time)->format('d/m/y h:i:s A') }}</td>
-                        <td>{{ $store->trackback_product_store_type }}</td>
+                        <td>{{ $store->shipment_information_id }}</td>
+                        <td>{{ \Carbon\Carbon::parse($store->shipment_created_at)->format('d/m/y h:i:s A') }}</td>
+                        <td>{{ $store->trackback_type_store_customer_warehouse }}</td>
                          <td>{{$store->total_weight}}</td>
                          <td>{{$store->status_1_count}}/ {{$store->quantity}}</td>
                          {{-- <td>{{ $store->status_1_count + $store->status_0_count }} ({{$store->status_1_count}}/{{ $store->status_1_count + $store->status_0_count }})</td> --}}
@@ -82,7 +100,7 @@
                         <td style="color: {{ $store->status == 0 ? 'red' : 'black' }}" class="shipment-list-status-icons">
                             @if ($store->status == 0)
                             Unopened
-                                <a href="{{ route('admin.stores.shipment-detail', ['id' => $store->id]) }}">
+                                <a href="{{ route('admin.stores.shipment-detail', ['id' => $store->shipment_id]) }}">
                                     <i class="bi bi-chevron-right shipment-list-status-icons"></i>
                                 </a>
                             {{-- @if ($store->status == 2)
@@ -92,7 +110,7 @@
                                 </a> --}}
                             @else
                             Opened
-                                <a href="{{ route('admin.stores.shipment-detail', ['id' => $store->id]) }}">
+                                <a href="{{ route('admin.stores.shipment-detail', ['id' => $store->shipment_id]) }}">
                                      <i class="bi bi-chevron-right shipment-list-status-icons"></i>
                                 </a>
                             @endif

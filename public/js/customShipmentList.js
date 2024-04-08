@@ -15,9 +15,9 @@
                         if(response.length > 0){
                              $.each(response, function(index, data) {
                             var newRow = '<tr>' +
-                                '<td>' + data.shipment_id + '</td>' +
-                                '<td>' + data.created_store_date_time + '</td>' +
-                                '<td>' + data.trackback_product_store_type + '</td>' +
+                                '<td>' + data.shipment_information_id + '</td>' +
+                                '<td>' + data.shipment_created_at + '</td>' +
+                                '<td>' + data.trackback_type_store_customer_warehouse + '</td>' +
                                 '<td>' + data.total_weight + '</td>' +
                                 '<td>' + '--' +'</td>' +
                                 '<td>' + '--' + '</td>' +
@@ -77,9 +77,9 @@
                     // Add new rows for each search result
                     $.each(data, function(index, item) {
                         var row = '<tr>' +
-                            '<td>' + item.shipment_id + '</td>' +
-                            '<td>' + item.created_store_date_time + '</td>' +
-                            '<td>' + item.trackback_product_store_type + '</td>' +
+                            '<td>' + item.shipment_information_id + '</td>' +
+                            '<td>' + item.shipment_created_at + '</td>' +
+                            '<td>' + item.trackback_type_store_customer_warehouse + '</td>' +
                             '<td>' + item.total_weight + '</td>' +
                             '<td>--</td>' +
                             '<td>--</td>' +

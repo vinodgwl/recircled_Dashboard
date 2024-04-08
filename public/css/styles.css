@@ -82,6 +82,10 @@
     margin-left: 16px;
 }
 
+.shipment-list-category-filter-btn::after {
+    display: none;
+}
+
 /* css for shipment list pages end*/
 
 /* css for pallet list of shipment pages start*/
@@ -89,7 +93,11 @@
     background-color: #E8E8E8;
     padding: 2px;
     color: #000000;
-    margin-left: 35px;
+    margin-left: -4px;
+}
+
+.unopned-pallet-list-status {
+    padding: 0px 27px;
 }
 
 .pallet-list-error-required-msg {
@@ -167,6 +175,10 @@
 
 .box-product-list-set-btn-alingments {
     margin-left: 17px;
+}
+
+.box-product-list-save-btn {
+    padding: 6px 31px;
 }
 
 /* css for product list of box pages end*/

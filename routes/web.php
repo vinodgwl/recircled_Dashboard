@@ -58,7 +58,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/admin/tackback-store/detail', [TackbackStoreController::class, 'index'])->name('admin.stores.index');
 
-    Route::get('/admin/tackback-store/save-list', [TackbackStoreController::class, 'tackbackStoreSaveList'])->name('admin.stores.saveList');
+    Route::get('/admin/tackback-shipment-list/save-list', [TackbackStoreController::class, 'tackbackStoreSaveList'])->name('admin.stores.saveList');
 
     Route::get('/admin/tackback-store/clear', [TackbackStoreController::class, 'cancelForm'])->name('tackback.stores.cancel');
 
@@ -85,7 +85,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/admin/tackback-store/updated-new-boxes', [TackbackStoreController::class, 'updateNewBoxes'])->name('tackbackStore.box.updated');
 
     Route::get('/admin/tackback-store/create-store', [TackbackStoreController::class, 'createStore'])->name('admin.stores.create-store');
-
+    
 });
 
 

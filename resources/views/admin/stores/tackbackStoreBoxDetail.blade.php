@@ -4,16 +4,33 @@
 @section('content')
     <div class="container-fluid">
         {{-- <div class="card "> --}}
-            <div class="card-header">
+            {{-- <div class="card-header">
                 <div class="mt-2 box-product-list-set-btn-alingments">
                  <a href="{{ route('tackbackStore.box.palllet-detail', ['pallet_id' => $StorePallet->id, 'tackback_store_id' => $StorePallet->tackback_store_id ]) }}" class="btn btn-secondary">
-                        Back
+                        Back23
                  </a>
                </div>
                <div class="mt-2 box-product-list-set-btn-alingments">
                All Tackback / Shipment ID: {{$storesList->shipment_id}} / Pallet ID: {{$StorePallet->pallet_unique_id}}/Box ID:
                 {{$singleBoxDetail->box_unique_id }}
                </div>
+            </div> --}}
+             <div class="card-header">
+               <div class="mt-2 pallet-box-added-set-btn-alingments">
+                Sorting / Shipment ID: {{$storesList->shipment_information_id}} / Pallet ID-: {{$StorePallet->pallet_gen_code}} / Box ID-: {{
+                    $singleBoxDetail->box_gen_code
+                }}
+               </div>
+               <div class="mt-2 pallet-box-added-set-btn-alingments">
+                 <a href="{{ route('admin.stores.shipment-detail', ['id' => $StorePallet->shipment_id  ]) }}" class="btn btn-secondary">
+                       <i class="bi bi-arrow-left"></i>
+                 </a>
+                 <span> Open Box</span>
+               </div>
+               <div class="mt-2 pallet-box-added-set-btn-alingments">
+                   ID: {{$singleBoxDetail->box_gen_code}}
+               </div>
+               
             </div>
             @if (session('success'))
                 <div id="successMessage" class="alert alert-success">
@@ -30,15 +47,19 @@
                     <div class="p-3">
                         <div class="row">
                             <div class="col-md-12">
-                                <h4 class="fw-bold mb-2">Box ID: {{$singleBoxDetail->box_unique_id}}</h4>
+                                <h4 class="fw-bold mb-2">Box Details</h4>
                             </div>
                             <div class="col-md-2">
                                 <label class="form-check-label" for="flexRadioDefault1">Brand:</label>
                                 <span class="fw-bold">{{$storesList->brand->name}}</span>
                             </div>
+                             <div class="col-md-2">
+                                <label class="form-check-label" for="flexRadioDefault1">Sub Brand:</label>
+                                <span class="fw-bold">{{$StorePallet->sub_brand}}</span>
+                            </div>
                             <div class="col-md-2">
                                 <label class="form-check-label" for="flexRadioDefault1">Tackback Type:</label>
-                                <span class="fw-bold">{{$storesList->trackback_product_store_type}}</span>
+                                <span class="fw-bold">{{$storesList->trackback_type_store_customer_warehouse}}</span>
                             </div>
                             <div class="col-md-2">
                                 <label class="form-check-label" for="flexRadioDefault1">Box weight:</label>
@@ -46,7 +67,7 @@
                             </div>
                             <div class="col-md-3">
                                 <label class="form-check-label" for="flexRadioDefault1">Date & Time</label>
-                                <span class="fw-bold"> {{$singleBoxDetail->created_store_box_date_time}}</span>
+                                <span class="fw-bold"> {{$singleBoxDetail->box_created_at}}</span>
                             </div>
                         </div>
                     </div>
@@ -60,13 +81,9 @@
                                 <label class="form-check-label" for="flexRadioDefault1">Opened Pallet:</label>
                                 <span class="fw-bold"></span>
                             </div> --}}
-                           <div class="col-md-2">
+                           <div class="col-md-3">
                                     <label for="exampleFormControlInput1" class="form-label">Box Packaging Weight</label>
-                                    <input type="text" name="box_weight" placeholder="weight" class="form-control" id="box_weight">
-                                    @error('box_weight')
-                                    <span class="alert text-danger box-product-list-error-required-msg">{{ $message }}</span>
-                                    @enderror
-                                    <span class="text-danger box-product-list-error-required-msg custom-error" id="boxWeightError" style="display: none;">Weight field is required and it should be greater than 0</span>
+                                    <span class="fw-bold">{{ $singleBoxDetail->box_weight}}</span>
                             </div>
                         </div>
                         <form id="myForm" method="post" action="{{ route('tackbackStore.box.product.save') }}">
@@ -133,8 +150,9 @@
                                     </div>
                                 </div>
                                <input type="hidden" name="shipment_id" id="shipment_id" value="{{ $storesList->shipment_id }}">
-                                <input type="hidden" name="box_id" id="box_id" value="{{$singleBoxDetail->id }}">
-                                <input type="hidden" name="store_pallet_id" id="box_id" value="{{$StorePallet->id }}">
+                                <input type="hidden" name="box_id" id="box_id" value="{{$singleBoxDetail->box_id }}">
+                                <input type="hidden" name="pallet_id" id="box_id" value="{{$StorePallet->pallet_id }}">
+                                <input type="hidden" name="brand_id" id="brand_id" value="{{$StorePallet->brand_id}}">
                             </div>
                         </form>
                 </div>
@@ -164,11 +182,7 @@
                             @endif
                         </td>
                        <td style="display: flex; color: {{ $box->status == 0 ? 'red' : 'black' }}">
-                            @if ($box->status == 0)
-                              <i class="bi bi-chevron-right box-product-list-status-icons"></i>
-                            @else
-                                    Opened <i class="bi bi-pencil" style="color: #9d8787"></i> <i class="bi bi-trash" style="color: #9d8787"></i> <i class="bi bi-chevron-right box-product-list-status-icons"></i>
-                            @endif
+                            <i class="bi bi-pencil box-product-list-status-icons" style="color: #9d8787"></i> <i class="bi bi-trash box-product-list-status-icons" style="color: #9d8787"></i></i>
                         </td>
                     </tr>
                     {{-- <input type="hidden" name="store_ids[]" id="store_ids" value="{{ $store->id }}"> --}}
@@ -197,6 +211,16 @@
                 </tr> --}}
             </tbody>
         </table>
+        <div class="p-4">
+            <div class="row justify-content-end">
+                <div class="col-auto">
+                    {{-- <a href="{{ route('admin.stores.create') }}" class="btn btn-secondary me-2">Back</a> --}}
+                    <button type="button" onclick="showToastr()" class="btn btn-secondary me-2 pallet-generate-setBtnColor">Cancel</button>
+                    <button type="submit" id="submitBtn" class="btn btn-secondary box-product-list-save-btn">Save</button>
+                    {{-- <button type="button" id="saveAndOpenBtn" onclick="saveAndOpen()" class="btn btn-secondary">Save & Open</button> --}}
+                </div>
+             </div>
+        </div>
         {{-- model for update box --}}
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
              <form id="myForm" method="post" >
