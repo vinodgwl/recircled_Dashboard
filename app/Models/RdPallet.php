@@ -74,4 +74,16 @@ class RdPallet extends Model
     {
         return $this->hasMany(StoreBox::class, 'store_pallet_id');
     }
+
+    public function boxes()
+    {
+        // Assuming 'pallet_id' is the foreign key in the 'rd_boxes' table that references the pallet
+        return $this->hasMany(RdBox::class, 'pallet_id');
+    }
+
+    public function palletPackagingMaterial()
+    {
+        return $this->hasMany(RdPalletPackagingMaterial::class, 'pallet_id');
+    }
+
 }

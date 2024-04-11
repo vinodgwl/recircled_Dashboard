@@ -181,4 +181,9 @@
     padding: 6px 31px;
 }
 
+/* Hide the dropdown arrow */
+#filterDropdown::after {
+    display: none;
+}
+
 /* css for product list of box pages end*/

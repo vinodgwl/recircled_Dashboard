@@ -31,16 +31,20 @@ $(document).ready(function() {
         $(document).ready(function() {
         $('#exampleModal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget);
-            var boxId = button.data('box-id');
-            var box_weight = button.data('box_weight');
-            var productCategory = button.data('product-category');
-            var preConsumer = button.data('pre-consumer');
+            var productId = button.data('product-id');
+            var productName = button.data('product-name');
+            var productQuantity = button.data('product-quantity');
+            var productWeight = button.data('product_weight');
+            var productTier = button.data('product-tier');
+            var goodResaleCondition = button.data('good-resale-condition');
             // $('#boxTotelWeight').text(box_weight);
-            $(this).find('#boxTotelWeight').val(box_weight);
-            $(this).find('#preConsumer').val(preConsumer);
-            $(this).find('#productCategory').val(productCategory);
-            // alert(preConsumer);
-            $(this).find('#boxId').val(boxId);
+            $(this).find('#productName').val(productName);
+            $(this).find('#productQuantity').val(productQuantity);
+            $(this).find('#productWeight').val(productWeight);
+            $(this).find('#productTier').val(productTier);
+            // $(this).find('#goodResaleCondition').val(goodResaleCondition);
+            $(this).find('#goodResaleCondition').prop('checked', goodResaleCondition);
+            $(this).find('#productId').val(productId);
         });
         });
         
@@ -84,8 +88,6 @@ $(document).ready(function() {
         }
     }
     function deletePalletBox($id){
-        // alert($id);
-        // document.getElementById("boxform").submit();
         if (confirm('Are you sure you want to delete this box?')) {
             document.getElementById("boxform").submit();
         }

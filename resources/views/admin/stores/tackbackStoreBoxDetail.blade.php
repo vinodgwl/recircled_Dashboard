@@ -4,17 +4,6 @@
 @section('content')
     <div class="container-fluid">
         {{-- <div class="card "> --}}
-            {{-- <div class="card-header">
-                <div class="mt-2 box-product-list-set-btn-alingments">
-                 <a href="{{ route('tackbackStore.box.palllet-detail', ['pallet_id' => $StorePallet->id, 'tackback_store_id' => $StorePallet->tackback_store_id ]) }}" class="btn btn-secondary">
-                        Back23
-                 </a>
-               </div>
-               <div class="mt-2 box-product-list-set-btn-alingments">
-               All Tackback / Shipment ID: {{$storesList->shipment_id}} / Pallet ID: {{$StorePallet->pallet_unique_id}}/Box ID:
-                {{$singleBoxDetail->box_unique_id }}
-               </div>
-            </div> --}}
              <div class="card-header">
                <div class="mt-2 pallet-box-added-set-btn-alingments">
                 Sorting / Shipment ID: {{$storesList->shipment_information_id}} / Pallet ID-: {{$StorePallet->pallet_gen_code}} / Box ID-: {{
@@ -169,20 +158,42 @@
                 </tr>
             </thead>
             <tbody>
-                  @foreach ($productBoxList as $box)
+                  @foreach ($productBoxList as $product)
                     <tr>
-                        <td>{{ $box->product_name }}</td>
-                        <td>{{$box->product_tier  }}</td>
-                        <td>{{ $box->product_quantity }} lbs</td>
-                         <td>{{$box->product_weight}}</td>
-                         <td> @if ($box->good_resale_condition == 1)
+                        <td>{{ $product->product_name }}</td>
+                        <td>{{$product->product_tier  }}</td>
+                        <td>{{ $product->product_quantity }} lbs</td>
+                         <td>{{$product->product_weight}}</td>
+                         <td> @if ($product->good_resale_condition == 1)
                                 <i class="bi bi-check-lg text-success fs-4"></i>
                             @else
                                 <i class="bi bi-x-lg text-danger"></i>
                             @endif
                         </td>
-                       <td style="display: flex; color: {{ $box->status == 0 ? 'red' : 'black' }}">
-                            <i class="bi bi-pencil box-product-list-status-icons" style="color: #9d8787"></i> <i class="bi bi-trash box-product-list-status-icons" style="color: #9d8787"></i></i>
+                       {{-- <td style="display: flex; color: {{ $product->status == 0 ? 'red' : 'black' }}">
+                            <i class="bi bi-pencil product-product-list-status-icons" style="color: #9d8787"></i> <i class="bi bi-trash product-product-list-status-icons" style="color: #9d8787"></i></i>
+                        </td> --}}
+                        <td style="display: flex;">
+                        <a style="margin-top: 9px" data-bs-toggle="modal"
+                                data-bs-target="#exampleModal"
+                                data-product-id="{{ $product->product_id }}"
+                                data-product-name="{{ $product->product_name }}"
+                                data-product-tier="{{ $product->product_tier }}"
+                                data-product-quantity="{{ $product->product_quantity }}"
+                                data-product_weight="{{ $product->product_weight }}"
+                                data-good-resale-condition="{{ $product->good_resale_condition }}"
+                                 onclick="clearBoxQuantityData(event)">
+                                    <i class="bi bi-pencil pallet-box-added-edit-icons"></i>
+                       </a>  <form id="boxform" action="{{ route('tackbackStore.box.product.delete', $product->product_id) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button style="margin-top:2px;" type="submit" class="btn btn-link" onclick="return confirm('Are you sure you want to delete this box?')">
+                                        <i class="bi bi-trash pallet-box-added-delete-icons"></i>
+                                    </button>
+                                    {{-- <a onclick="deletePalletBox({{$box->id}})">
+                                        <i class="bi bi-trash pallet-box-added-delete-icons"></i>
+                                    </a> --}}
+                                </form>  
                         </td>
                     </tr>
                     {{-- <input type="hidden" name="store_ids[]" id="store_ids" value="{{ $store->id }}"> --}}
@@ -216,77 +227,75 @@
                 <div class="col-auto">
                     {{-- <a href="{{ route('admin.stores.create') }}" class="btn btn-secondary me-2">Back</a> --}}
                     <button type="button" onclick="showToastr()" class="btn btn-secondary me-2 pallet-generate-setBtnColor">Cancel</button>
-                    <button type="submit" id="submitBtn" class="btn btn-secondary box-product-list-save-btn">Save</button>
+                    <a href="{{ route('admin.stores.shipment-detail', ['id' => $StorePallet->shipment_id  ]) }}" id="submitBtn" class="btn btn-secondary box-product-list-save-btn">Save</a>
                     {{-- <button type="button" id="saveAndOpenBtn" onclick="saveAndOpen()" class="btn btn-secondary">Save & Open</button> --}}
                 </div>
              </div>
         </div>
-        {{-- model for update box --}}
+       {{-- model for update box --}}
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-             <form id="myForm" method="post" >
-                
-            <div class="modal-dialog modal-md">
+             <form id="myForm" method="post" action="{{ route('tackbackStore.box.product-updated') }}">
+                @csrf
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title fw-bold" id="exampleModalLabel">Update Box</h5>
+                        <h5 class="modal-title fw-bold" id="exampleModalLabel">Update Product</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        {{-- <div class="row">
+                        <div class="row">
                             <div class="col-md-4">
-                                Pallet ID: <span class="fw-bold" id="palletId"></span>
+                                <label for="exampleFormControlInput1" class="form-label">Product</label>
+                                <select name="product_name" id="productName" class="form-select" aria-label="Default select example">
+                                    <option selected value="">Select Product</option>
+                                    <option value="cloth">Cloth</option>
+                                    <option value="jeans">Jeans</option>
+                                    <option value="dress">Dress</option>
+                                </select>
+                                @error('product_name')
+                                <span class="alert text-danger create-error-required-msg">{{ $message }}</span>
+                                @enderror
                             </div>
-
                             <div class="col-md-4">
-                                Pallet Weight: <span class="fw-bold" id="palletWeight"></span>
+                                <label for="exampleFormControlInput1" class="form-label">Tier</label>
+                                <select name="product_tier" id="productTier" class="form-select" aria-label="Default select example">
+                                    <option selected value="">Select Tier</option>
+                                    <option value="tier-1">Tier-1</option>
+                                    <option value="tier-2">Tier-2</option>
+                                    <option value="tier-3">Tier-3</option>
+                                </select>
+                                @error('product_tier')
+                                <span class="alert text-danger create-error-required-msg">{{ $message }}</span>
+                                @enderror
                             </div>
                             <div class="col-md-4">
-                                Sub Brands: <span class="fw-bold" id="subBrands"></span>
+                                <label for="exampleFormControlInput1" class="form-label">Quantity</label>
+                                <input type="text" name="product_quantity" id="productQuantity" class="form-control" id="exampleFormControlInput1">
+                                @error('product_quantity')
+                                <span class="alert text-danger create-error-required-msg">{{ $message }}</span>
+                                @enderror
                             </div>
-
-                        </div> --}}
-                        <div class="row mt-4">
-                            <div class="col-md-4">
-                                <label for="boxQuantity" class="form-label">Box Weight (lbs)</label>
-                            </div>
-                            <div class="col-md-6">
-                                <input type="text" name="boxboxQuantity" class="form-control" id="boxQuantity">
-                            </div>
-                                <span class="text-danger box-product-list-error-required-msg custom-error" id="errorMessage" style="display: none;">Quantity field is required and it should be greater than 0</span>
-                            
+                           
                         </div>
-                        <input type="hidden" name="storeId" id="storeId">
+                        {{-- <input type="hidden" name="shipment_id" id="shipment_id"> --}}
+                        <input type="hidden" name="productId" id="productId">
                         <div class="row mt-4">
                             <div id="materialFields">
                                 <div class="row mb-3 material-field">
-                                    
-                                    <div class="col-md-6">
-                                        <label for="exampleFormControlInput1" class="form-label">Product Category</label>
-                                        <select name="product_category" id="product_category" class="form-select" aria-label="Default select example">
-                                            <option selected value="">Select Product</option>
-                                            <option value="cloth">Clothes</option>
-                                            <option value="plastic">Plastic</option>
-                                            <option value="wood">Wood</option>
-                                        </select>
+                                    <div class="col-md-4">
+                                        <label for="exampleFormControlInput1" class="form-label">Weight</label>
+                                        <input type="text" name="product_weight" id="productWeight" class="form-control" id="exampleFormControlInput1">
+                                        @error('product_weight')
+                                        <span class="alert text-danger create-error-required-msg">{{ $message }}</span>
+                                        @enderror
                                     </div>
-                                    
-                                    <div class="col-md-6">
-                                        <label for="exampleFormControlInput1" class="form-label">Pre Consumer</label>
-                                        <select name="pre_consumer" id="pre_consumer" class="form-select" aria-label="Default select example">
-                                            <option selected value="">Select Gender</option>
-                                            <option value="yes">Yes</option>
-                                            <option value="no">No</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-auto">
-                                        <button class="btn btn-danger cancel-btn" type="button" style="background-color: transparent; border: none;">
-                                            <i class="bi bi-x" style="font-size: 1.5rem;"></i>
-                                        </button>
-
-                                        {{-- <button class="btn btn-danger cancel-btn" type="button">
-                                            <i class="bi bi-x"></i>
-                                        </button> --}}
-                                    </div>
+                                    <div class="col-md-4 mt-4">
+                                            <label for="exampleFormControlInput1" class="form-label">Good Resale Condition</label>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" name="good_resale_condition" id="goodResaleCondition" type="checkbox" id="inlineCheckbox1" value="1">
+                                                <label class="form-check-label" for="inlineCheckbox1">Yes</label>
+                                            </div>
+                                        </div>
                                 </div>
                                 <!-- Dynamic material fields will be added here -->
                             </div>

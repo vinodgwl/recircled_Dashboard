@@ -3,9 +3,22 @@
 
 @section('content')
     <div class="container-fluid">
-        <div class="card ">
-            <div class="card-header">
-                Tackback Products / Shipment ID: TBK65JHRTYUU / Pallet ID: TBK65PLDTRO-P01
+        {{-- <div class="card "> --}}
+           <div class="card-header">
+               
+               <div class="mt-2 pallet-box-added-set-btn-alingments">
+                Sorting / Shipment Detail / Pallet Detail
+               </div>
+               <div class="mt-2 pallet-box-added-set-btn-alingments">
+                 <a href="{{ route('admin.stores.shipment-detail', ['id' => $StorePallet->shipment_id  ]) }}" class="btn btn-secondary">
+                       <i class="bi bi-arrow-left"></i>
+                 </a>
+                 <span> Pallet Detail</span>
+               </div>
+               <div class="mt-2 pallet-box-added-set-btn-alingments">
+                   ID: {{$StorePallet->pallet_gen_code}}
+               </div>
+               
             </div>
             @if (session('success'))
                 <div id="successMessage" class="alert alert-success">
@@ -22,34 +35,35 @@
                 <div class="card-body">
                     <div class="p-3">
                         <div class="row">
-                            <div class="col-md-12">
-                                <h4 class="fw-bold mb-2">Pallet ID: TBK65PLDTRO-P01</h4> 
-                            </div>
-                            <div class="col-md-3">
+                            {{-- <div class="col-md-12">
+                                <h4 class="fw-bold mb-2">Pallet ID: TBK65PLDTRO-P011111</h4> 
+                            </div> --}}
+                            <div class="col-md-2">
                                 <label class="form-check-label" for="flexRadioDefault1">Parent Brand:</label>
-                                <span class="fw-bold">H & M</span>
+                                <span class="fw-bold">{{$shipmentList->brand->name}}</span>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <label class="form-check-label" for="flexRadioDefault1">Sub Brand:</label>
-                                <span class="fw-bold">Weekday</span>
+                                <span class="fw-bold">{{$StorePallet->sub_brand}}</span>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <label class="form-check-label" for="flexRadioDefault1">Teckback Type:</label>
-                                <span class="fw-bold">store</span>
+                                <span class="fw-bold">{{$shipmentList->trackback_type_store_customer_warehouse}}</span>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <label class="form-check-label" for="flexRadioDefault1">Pallet Weight</label>
-                                <span class="fw-bold">54 lbs</span>
+                                <span class="fw-bold">{{$StorePallet->pallet_weight}}</span>
                             </div>
-                        </div>
-                        <div class="row mt-3">
                             <div class="col-md-3">
                                 <label class="form-check-label" for="flexRadioDefault1">Date & Time</label>
                                 <span class="fw-bold"> 06/03/24 07:52:52 AM</span>
                             </div>
+                        </div>
+                        <div class="row mt-3">
                             <div class="col-md-3">
                                 <label class="form-check-label" for="flexRadioDefault1">Total Box Quantity</label>
-                                <span class="fw-bold">42</span> <a href="#" class="edit-icon"><i class="bi bi-pencil-square"></i></a>
+                                <span class="fw-bold">{{$StorePallet->box_quantity}}</span> 
+                                {{-- <a href="#" class="edit-icon"><i class="bi bi-pencil-square"></i></a> --}}
                             </div>
                             <div class="col-md-3">
                                 <label class="form-check-label" for="flexRadioDefault1">Opened Box</label>
@@ -57,7 +71,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="p-3">
+                    {{-- <div class="p-3">
                         <div class="row">
                             <div class="col-md-12">
                                 <h4 class="fw-bold mb-2">Add New Box</h4> 
@@ -90,239 +104,204 @@
                             </button>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
-        </div>
-        <table id="dataTable" class="table table-bordered mt-4">
-            <thead>
+        {{-- </div> --}}
+         <div class="card ">
+            <div class="row p-2">
+                <div class="col-md-9">
+                    <h4 class="fw-bold mb-2">Box Detail</h4> 
+                </div>
+                <div class="col-md-3">
+                    {{-- <h4 class="fw-bold mb-2">Box Detail</h4>  --}}
+                      <button style="margin-left: 10px" data-bs-toggle="modal" data-bs-target="#updateBoxModal" 
+                        data-box-id="{{ $BoxList->box_id }}"
+                         data-box-gen-code="{{ $BoxList->box_gen_code  }}"
+                        data-pallet-id="{{ $StorePallet->pallet_id }}"
+                        data-pallet-gen-code="{{ $StorePallet->pallet_gen_code }}"
+                        data-box-weight="{{ $BoxList->box_weight }}"
+                        data-box-sub-brands="{{ $StorePallet->sub_brand }}"
+                        data-box-product-category="{{ $BoxList->product_category }}"
+                        data-box-pre-consumer="{{ $BoxList->pre_consumer }}"
+                        data-box-packging-material = "{{ $BoxPackgingMaterialList }}"
+                        
+                      type="button" id="addMaterialBtn"
+                                class="btn btn-secondary">
+                                <i class="bi bi-pencil-square"></i> Edit Box Info
+                            </button>
+                </div>
+                 <div class="col-md-2">
+                    <label class="form-check-label" for="flexRadioDefault1">ID:</label>
+                    <span class="fw-bold">{{$BoxList->box_gen_code}}</span>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-check-label" for="flexRadioDefault1">Box Weight:</label>
+                    <span class="fw-bold">{{$BoxList->box_weight}}</span>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-check-label" for="flexRadioDefault1">Product Category:</label>
+                    <span class="fw-bold">{{$BoxList->product_category}}</span>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-check-label" for="flexRadioDefault1">Pre Consumer</label>
+                     <span class="fw-bold">
+                        @if($BoxList->pre_consumer == 1)
+                            Yes
+                        @else
+                            No
+                        @endif
+                    </span>
+                </div>
+            </div>
+            <table id="dataTable" class="table table-bordered mt-4">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Tier</th>
+                        <th>Quantity</th>
+                        <th>Weight</th>
+                        <th>Resale Condition</th>
+                    </tr>
+                </thead>
+                <tbody>
+                 @foreach ($BoxProductList as $product)
+                    <tr>
+                        <td>{{ $product->product_name }}</td> <!-- Serial number -->
+                         <td>{{ $product->product_tier }}</td> 
+                        <td>{{$product->product_quantity }}</td>
+                        <td>{{ $product->product_weight }} lbs</td>
+                        <td> @if ($product->good_resale_condition == 1)
+                                <i class="bi bi-check-lg text-success fs-4"></i>
+                            @else
+                                <i class="bi bi-x-lg text-danger"></i>
+                            @endif
+                        </td>
+                    </tr>
+                    <input type="hidden" name="product_ids[]" id="product_ids" value="{{ $product->pallet_id }}">
+                @endforeach 
+                @if ($BoxProductList->isEmpty())
                 <tr>
-                    <th>Box No.</th>
-                    <th>Box Id</th>
-                    <th>Box Weight (lbs)</th>
-                    <th>Type of Product</th>
-                    <th>Pre Consumer</th>
-                    <th>Status</th>
+                    <td colspan="7" class="text-center">No record Found</td>
                 </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>01</td>
-                    <td>TBK65JHRTYUU-B01</td>
-                    <td>2</td>
-                    <td>Clothes</td>
-                    <td>Yes</td>
-                    <td class="text-danger">
-                        Unopned 
-                        <a href="#" class="text-decoration-none mx-1">
-                            <i class="bi bi-pencil"></i> <!-- Edit Icon -->
-                        </a>
-                        <a href="#" class="text-decoration-none mx-1">
-                            <i class="bi bi-trash"></i> <!-- Delete Icon -->
-                        </a>
-                        <a href="#" class="text-decoration-none mx-1">
-                            <i class="bi bi-arrow-right"></i> <!-- Anchor Tag -->
-                        </a>
-                    </td>
-
-                </tr>
-                <tr>
-                    <td>02</td>
-                    <td>TBK65JHRTYUU-B02</td>
-                    <td>3</td>
-                    <td>Clothes</td>
-                    <td>No</td>
-                    <td class="text-danger">
-                        Unopned 
-                        <a href="#" class="text-decoration-none mx-1">
-                            <i class="bi bi-pencil"></i> <!-- Edit Icon -->
-                        </a>
-                        <a href="#" class="text-decoration-none mx-1">
-                            <i class="bi bi-trash"></i> <!-- Delete Icon -->
-                        </a>
-                        <a href="#" class="text-decoration-none mx-1">
-                            <i class="bi bi-arrow-right"></i> <!-- Anchor Tag -->
-                        </a>
-                    </td>
-                </tr>
-               <tr>
-                    <td>03</td>
-                    <td>TBK65JHRTYUU-B03</td>
-                    <td>6</td>
-                    <td>Clothes</td>
-                    <td>Yes</td>
-                    <td class="text-danger">
-                        Unopned 
-                        <a href="#" class="text-decoration-none mx-1">
-                            <i class="bi bi-pencil"></i> <!-- Edit Icon -->
-                        </a>
-                        <a href="#" class="text-decoration-none mx-1">
-                            <i class="bi bi-trash"></i> <!-- Delete Icon -->
-                        </a>
-                        <a href="#" class="text-decoration-none mx-1">
-                            <i class="bi bi-arrow-right"></i> <!-- Anchor Tag -->
-                        </a>
-                    </td>
-                </tr>
-              <tr>
-                    <td>04</td>
-                    <td>TBK65JHRTYUU-B61</td>
-                    <td>2</td>
-                    <td>Clothes</td>
-                    <td>Yes</td>
-                    <td class="text-danger">
-                        Unopned 
-                        <a href="#" class="text-decoration-none mx-1">
-                            <i class="bi bi-pencil"></i> <!-- Edit Icon -->
-                        </a>
-                        <a href="#" class="text-decoration-none mx-1">
-                            <i class="bi bi-trash"></i> <!-- Delete Icon -->
-                        </a>
-                        <a href="#" class="text-decoration-none mx-1">
-                            <i class="bi bi-arrow-right"></i> <!-- Anchor Tag -->
-                        </a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>05</td>
-                    <td>TBK65JHRTYUU-B06</td>
-                    <td>2</td>
-                    <td>Clothes</td>
-                    <td>No</td>
-                    <td class="text-danger">
-                        Unopned 
-                        <a href="#" class="text-decoration-none mx-1">
-                            <i class="bi bi-pencil"></i> <!-- Edit Icon -->
-                        </a>
-                        <a href="#" class="text-decoration-none mx-1">
-                            <i class="bi bi-trash"></i> <!-- Delete Icon -->
-                        </a>
-                        <a href="#" class="text-decoration-none mx-1">
-                            <i class="bi bi-arrow-right"></i> <!-- Anchor Tag -->
-                        </a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>06</td>
-                    <td>TBK65JHRTYUU-B09</td>
-                    <td>2</td>
-                    <td>Clothes</td>
-                    <td>Yes</td>
-                    <td class="text-danger">
-                        Unopned 
-                        <a href="#" class="text-decoration-none mx-1">
-                            <i class="bi bi-pencil"></i> <!-- Edit Icon -->
-                        </a>
-                        <a href="#" class="text-decoration-none mx-1">
-                            <i class="bi bi-trash"></i> <!-- Delete Icon -->
-                        </a>
-                        <a href="#" class="text-decoration-none mx-1">
-                            <i class="bi bi-arrow-right"></i> <!-- Anchor Tag -->
-                        </a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                @endif
+                </tbody>
+            </table>
+         </div>
+        </form>
+        {{-- model for open box --}}
+        <div class="modal fade" id="updateBoxModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+             <form id="updatedmyForm" method="post" action="{{ route('tackbackStore.box.product.updated') }}">
+                @csrf
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Add Pallet Details</h5>
+                        <h5 class="modal-title fw-bold" id="exampleModalLabel">Open Box </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-md-4">
-                                Pallet ID: <span class="fw-bold" id="palletId">TBK69JHEERTERT</span>
-                            </div>
-
-                            <div class="col-md-4">
-                                Pallet Weight: <span class="fw-bold" id="palletWeight">102 lbs</span>
+                                Pallet ID: <span class="fw-bold" id="BoxpalletId"></span>
                             </div>
                             <div class="col-md-4">
-                                Sub Brands: <span class="fw-bold" id="subBrands">Weekday</span>
+                                Sub Brands: <span class="fw-bold" id="BoxsubBrands"></span>
                             </div>
-
+                             <div class="col-md-4">
+                                {{-- @if(isset($singlePalletBox))
+                                    @endif --}}
+                                    Box Id <span class="fw-bold" id="NewBoxGenCode"></span>
+                            </div>
                         </div>
                         <div class="row mt-4">
-                            <div class="col-md-2">
-                                <label for="boxQuantity" class="form-label">Box Quantity</label>
-                            </div>
-                            <div class="col-md-4">
-                                <input type="text" class="form-control" id="boxQuantity">
-                            </div>
-                        </div>
-                        <h3 class="mt-3">Pallet Packaging Material</h3>
-                        <div class="row mt-4">
-                            <div id="materialFields">
+                            <div >
                                 <div class="row mb-3 material-field">
-                                    <div class="col">
-                                        <select class="form-select" name="material_type[]">
-                                            <option value="Type1">Material Type</option>
-                                            <option value="Type2">Type2</option>
+                                    <h4 class="fw-bold">Add Box Detail</h4>
+                                    <div class="col-md-4">
+                                        <label for="logo" class="form-label">weight (lbs)</label>
+                                        <input type="number" class="form-control" name="box_weight" id="box_weight"
+                                            placeholder="Weight">
+                                             <div id="boxWeightValidation" class="text-danger"></div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="exampleFormControlInput1" class="form-label">Product Category</label>
+                                        <select name="product_category" id="product_category" class="form-select" aria-label="Default select example">
+                                            <option selected value="">Select Product</option>
+                                            <option value="cloth">Clothes</option>
+                                            <option value="plastic">Plastic</option>
+                                            <option value="wood">Wood</option>
+                                        </select>
+                                         <div id="productCategoryValidation" class="text-danger"></div>
+                                    </div>
+                                    
+                                    <div class="col-md-4">
+                                        <label for="exampleFormControlInput1" class="form-label">Pre Consumer</label>
+                                        <select name="pre_consumer" id="pre_consumer" class="form-select" aria-label="Default select example">
+                                            <option value="yes">Yes</option>
+                                            <option value="no">No</option>
                                         </select>
                                     </div>
-                                    <div class="col">
-                                        <input type="number" class="form-control" name="material_weight[]"
+                                   <input type="hidden" name="palletId" id="palletId">
+                                   <input type="hidden" name="boxId" id="boxId">
+                                     {{-- <div id="errorMessage1" class="text-danger" style="display: none;"></div> --}}
+                                </div>
+                                <!-- Dynamic material fields will be added here -->
+                            </div>
+                        </div>
+                         <div class="row">
+                            <div class="col-md-9">
+                                 <h4 class="mt-4 fw-bold">Box Packaging Material</h4>
+                            </div>
+                            <div class="col-md-3 mt-3">
+                                  <button style="margin-left: 10px" type="button" id="addMaterialBtn1"
+                                class="btn btn-secondary">
+                                <i class="bi bi-plus"></i> Add New Material
+                            </button>
+                            </div>
+                         </div>
+                       
+                        <div class="row mt-4">
+                            <div id="materialFields1">
+                                {{-- <div class="row mb-3 material-field">
+                                    <div class="col-md-4">
+                                        <label for="logo" class="form-label">Material Type:</label>
+                                        <select class="form-select" name="material_type1[]">
+                                            <option value="">material type</option>
+                                            <option value="paper">Paper</option>
+                                            <option value="wood">Wood</option>
+                                            <option value="plastic">Plastic</option>
+                                            <option value="shrink-wrap">Shrink-Wrap</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="logo" class="form-label">Material weight (lbs)</label>
+                                        <input type="number" class="form-control" name="material_weight1[]"
                                             placeholder="Weight">
                                     </div>
                                     <div class="col-auto">
-                                        <button class="btn btn-danger cancel-btn" type="button">
-                                            <i class="bi bi-x"></i>
+                                        <button class="btn btn-danger cancel-btn" type="button" style="background-color: transparent; border: none;">
+                                            <i class="bi bi-x" style="font-size: 1.5rem;"></i>
                                         </button>
                                     </div>
-                                </div>
+                                </div> --}}
                                 <!-- Dynamic material fields will be added here -->
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <div class="col-md-6 text-left"> <!-- This column takes up half of the width -->
-                            <button style="margin-left: -149px" type="button" id="addMaterialBtn"
-                                class="btn btn-secondary">
-                                <i class="bi bi-plus"></i> Add New Material
-                            </button>
+                           
                         </div>
-                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-secondary">Save & Continue plaller</button>
+                        <button type="button" class="btn btn-secondary me-2 pallet-generate-setBtnColor" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-secondary">Update</button>
+                        {{-- <button type="submit" class="btn btn-secondary">Save </button> --}}
                     </div>
                 </div>
             </div>
+             </form>
         </div>
-        </form>
     </div>
 @endsection
 
 @push('scripts')
-    <script>
-        $(document).ready(function() {
-            $('#dataTable').DataTable();
-        });
-        alert('good');
-        $(document).ready(function() {
-            $('#addMaterialBtn').click(function() {
-                var newMaterialField = '<div class="row mb-3 material-field">' +
-                    '<div class="col">' +
-                    '<select class="form-select" name="material_type[]">' +
-                    '<option value="Type1">Material Type</option>' +
-                    '<option value="Type2">Type2</option>' +
-                    '</select>' +
-                    '</div>' +
-                    '<div class="col">' +
-                    '<input type="number" class="form-control" name="material_weight[]" placeholder="Weight">' +
-                    '</div>' +
-                    '<div class="col-auto">' +
-                    '<button class="btn btn-danger cancel-btn" type="button"><i class="bi bi-x"></i></button>' +
-                    '</div>' +
-                    '</div>';
-
-                $('#materialFields').append(newMaterialField);
-            });
-
-            // Dynamically added cancel button event handler
-            $('#materialFields').on('click', '.cancel-btn', function() {
-                $(this).closest('.material-field').remove();
-            });
-        });
-    </script>
+     <script src="{{ asset('js/customBoxUpdate.js') }}"></script>
 @endpush

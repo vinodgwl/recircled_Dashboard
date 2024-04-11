@@ -122,7 +122,8 @@
                             <span class="unopned-pallet-list-status">Opened</span>
                                 <a class="shipment-list-set-alingment-icons text-decoration-none" data-bs-toggle="modal"
                                 data-bs-target="#exampleModal1"
-                                 {{-- data-box-id="{{ $singlePalletBox->box_id }}" --}}
+                                data-box-id="{{ $store->boxes[0]->box_id }}"
+                                 data-box-gen-code="{{ $store->boxes[0]->box_gen_code }}"
                                 data-pallet-id="{{ $store->pallet_id }}"
                                 data-pallet-gen-code="{{ $store->pallet_gen_code }}"
                                 data-pallet-weight="{{ $store->pallet_weight }}"
@@ -131,6 +132,30 @@
                                 <span class="pallet-list-status-icons">Open Box</span>
                                      <i class="bi bi-chevron-right pallet-list-status-icons"></i>
                                 </a>
+                                {{-- <span class="bi bi-ellipsis-h"></span> --}}
+                               <button class="dropdown-toggle" href="#" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="border: none; background-color: transparent;">
+                                <span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
+                                        <path d="M8 9a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm0-4a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm0-4a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
+                                    </svg>
+                                </span>
+                               <ul class="dropdown-menu" aria-labelledby="filterDropdown">
+                                    <li><a class="dropdown-item view-pallet" href="{{ route('admin.stores.pallet-detail', ['pallet_id' => $store->pallet_id  ]) }}">View Pallet</a></li>
+                                    <li><a class="dropdown-item edit-pallet" data-bs-toggle="modal"
+                                data-bs-target="#updatePallet" 
+                                data-pallet-id="{{ $store->pallet_id }}"
+                                data-pallet-gen-code="{{ $store->pallet_gen_code }}"
+                                data-pallet-weight="{{ $store->pallet_weight }}"
+                                data-sub-brands="{{ $store->sub_brand }}"
+                                data-box-quantity="{{ $store->box_quantity }}"
+                                @isset($store->palletPackagingMaterial) 
+                                    data-pallet-packging-material="{{  $store->palletPackagingMaterial }}" 
+                                @endisset
+                                href="#">Edit pallet info</a></li>
+                                    <li><a class="dropdown-item submit-approval" href="#">Submit for Approval</a></li>
+                                    <!-- Add more filter options here -->
+                                </ul>
+                            </button>
                             @endif
                         </td>
                     </tr>
@@ -292,7 +317,7 @@
                              <div class="col-md-4">
                                 {{-- @if(isset($singlePalletBox))
                                     @endif --}}
-                                    Box Id <span class="fw-bold" id="BoxpalletWeight1">RIE7793030ZNSD-BOX1</span>
+                                    Box Id <span class="fw-bold" id="BoxpalletGenCode"></span>
                             </div>
                         </div>
                         <div class="row mt-4">
@@ -324,6 +349,7 @@
                                         </select>
                                     </div>
                                    <input type="hidden" name="palletId" id="palletId">
+                                   <input type="hidden" name="boxId" id="boxId1">
                                      {{-- <div id="errorMessage1" class="text-danger" style="display: none;"></div> --}}
                                 </div>
                                 <!-- Dynamic material fields will be added here -->
@@ -385,9 +411,107 @@
             </div>
              </form>
         </div>
+
+         {{-- model for update pallet --}}
+        <div class="modal fade" id="updatePallet" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+             <form id="myForm" method="post" action="{{ route('tackbackStore.pallet.update') }}">
+                @csrf
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title fw-bold" id="exampleModalLabel">Update Pallet</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                Pallet ID: <span class="fw-bold" id="updatePalletGenCode"></span>
+                            </div>
+
+                            <div class="col-md-4">
+                                Pallet Weight: <span class="fw-bold" id="updatedPalletWeight"></span>
+                            </div>
+                            <div class="col-md-4">
+                                Sub Brands: <span class="fw-bold" id="updatedSubBrands"></span>
+                            </div>
+
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-md-2">
+                                <label for="boxQuantity" class="form-label">Box Quantity</label>
+                            </div>
+                            <div class="col-md-2">
+                                <input type="number" name="boxboxQuantity" class="form-control" id="updatedboxQuantity" required>
+                            </div>
+                                <span class="text-danger pallet-list-error-required-msg pallet-list-custom-error" id="errorMessage" style="display: none;">Quantity field is required and it should be greater than 0</span>
+                            
+                        </div>
+                        <input type="hidden" name="palletId" id="palletId">
+                        
+                        {{-- <h4 class="mt-4 fw-bold">Pallet Packaging Material</h4> --}}
+                         <div class="row">
+                            <div class="col-md-9">
+                                 <h4 class="mt-4 fw-bold">Pallet Packaging Material</h4>
+                            </div>
+                            <div class="col-md-3 mt-3">
+                                  <button style="margin-left: 10px" type="button" id="addMaterialBtn2"
+                                class="btn btn-secondary">
+                                <i class="bi bi-plus"></i> Add New Material
+                            </button>
+                            </div>
+                         </div>
+                        <div class="row mt-4">
+                            <div id="materialFields2">
+                                {{-- <div class="row mb-3 material-field">
+                                    <div class="col-md-4">
+                                        <label for="logo" class="form-label">Material Type:</label>
+                                        <select class="form-select" name="material_type2[]">
+                                            <option value="">material type</option>
+                                            <option value="paper">Paper</option>
+                                            <option value="wood">Wood</option>
+                                            <option value="plastic">Plastic</option>
+                                            <option value="shrink-wrap">Shrink-Wrap</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="col-md-4">
+                                        <label for="logo" class="form-label">Material weight (lbs)</label>
+                                        <input type="number" class="form-control" name="material_weight2[]"
+                                            placeholder="Weight">
+                                    </div>
+                                    <div class="col-auto">
+                                        <button class="btn btn-danger cancel-btn" type="button" style="background-color: transparent; border: none;">
+                                            <i class="bi bi-x" style="font-size: 1.5rem;"></i>
+                                        </button>
+                                    </div>
+                                </div> --}}
+                                <!-- Dynamic material fields will be added here -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="col-md-6 text-left"> <!-- This column takes up half of the width -->
+                            {{-- <button style="margin-left: -84px" type="button" id="addMaterialBtn"
+                                class="btn btn-secondary">
+                                <i class="bi bi-plus"></i> Add New Material
+                            </button> --}}
+                        </div>
+                        <button type="button" class="btn btn-secondary me-2 pallet-generate-setBtnColor" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-secondary">Update </button>
+                    </div>
+                </div>
+            </div>
+             </form>
+        </div>
     </div>
 @endsection
 
 @push('scripts')
     <script src="{{ asset('js/csstomShipmentDetail.js') }}"></script>
 @endpush
+<style>
+    /* Hide the dropdown arrow */
+    #filterDropdown::after {
+        display: none;
+    }
+</style>
