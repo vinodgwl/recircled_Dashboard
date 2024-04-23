@@ -93,6 +93,12 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/admin/tackback-store/updated-new-product-boxes', [TackbackStoreController::class, 'updateNewProductBoxes'])->name('tackbackStore.box.product.updated');
 
     Route::post('/admin/tackback-store/update-pallet', [TackbackStoreController::class, 'updatePallet'])->name('tackbackStore.pallet.update');
+
+     Route::get('/admin/tackback-store/pallet-box-list', [TackbackStoreController::class, 'palletBoxList'])->name('admin.stores.pallet-box-list');
+
+     Route::get('/admin/tackback-store/pallet-open-next-box-', [TackbackStoreController::class, 'palletOpenNextBox'])->name('admin.tackbackStore.pallet-open-next-box');
+
+     Route::post('/admin/tackback-store/create-boxes-and-open', [TackbackStoreController::class, 'createBoxesAndOpen'])->name('tackbackStore.box.creates-open-box');
 });
 
 

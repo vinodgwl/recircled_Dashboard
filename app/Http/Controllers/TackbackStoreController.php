@@ -264,26 +264,48 @@ class TackbackStoreController extends Controller
         //     ->where('store_pallets.tackback_store_id', $id)
         //     ->groupBy('store_pallets.id')
         //     ->paginate($perPage);
-        $storePallets = RdPallet::select('rd_pallets.*')
-        ->selectSub(function ($query) {
-            $query->selectRaw('COUNT(id) AS open_count')
-                ->from('store_boxes')
-                ->whereColumn('store_boxes.store_pallet_id', 'rd_pallets.pallet_id')
-                ->where('store_boxes.status', 0);
-        }, 'open_count')
-        ->selectSub(function ($query) {
-            $query->selectRaw('COUNT(id) AS unopened_count')
-                ->from('store_boxes')
-                ->whereColumn('store_boxes.store_pallet_id', 'rd_pallets.pallet_id')
-                ->where('store_boxes.status', 1);
-        }, 'unopened_count')
-        ->selectSub(function ($query) {
-            $query->selectRaw('COUNT(id) AS total_count')
-                ->from('store_boxes')
-                ->whereColumn('store_boxes.store_pallet_id', 'rd_pallets.pallet_id');
-        }, 'total_count')
-        ->where('rd_pallets.shipment_id', $id)
-        ->paginate($perPage);
+        // $storePallets = RdPallet::select('rd_pallets.*')
+        // ->selectSub(function ($query) {
+        //     $query->selectRaw('COUNT(id) AS open_count')
+        //         ->from('store_boxes')
+        //         ->whereColumn('store_boxes.store_pallet_id', 'rd_pallets.pallet_id')
+        //         ->where('store_boxes.status', 0);
+        // }, 'open_count')
+        // ->selectSub(function ($query) {
+        //     $query->selectRaw('COUNT(id) AS unopened_count')
+        //         ->from('store_boxes')
+        //         ->whereColumn('store_boxes.store_pallet_id', 'rd_pallets.pallet_id')
+        //         ->where('store_boxes.status', 1);
+        // }, 'unopened_count')
+        // ->selectSub(function ($query) {
+        //     $query->selectRaw('COUNT(id) AS total_count')
+        //         ->from('store_boxes')
+        //         ->whereColumn('store_boxes.store_pallet_id', 'rd_pallets.pallet_id');
+        // }, 'total_count')
+        // ->where('rd_pallets.shipment_id', $id)
+        // ->paginate($perPage);
+
+                $storePallets = RdPallet::select('rd_pallets.*')
+            ->selectSub(function ($query) {
+                $query->selectRaw('COUNT(DISTINCT box_id) AS open_count')
+                    ->from('rd_boxes')
+                    ->whereColumn('rd_boxes.pallet_id', 'rd_pallets.pallet_id')
+                    ->where('rd_boxes.status', 1);
+            }, 'open_count')
+            ->selectSub(function ($query) {
+                $query->selectRaw('COUNT(DISTINCT box_id) AS unopened_count')
+                    ->from('rd_boxes')
+                    ->whereColumn('rd_boxes.pallet_id', 'rd_pallets.pallet_id')
+                    ->where('rd_boxes.status', 0);
+            }, 'unopened_count')
+            ->selectSub(function ($query) {
+                $query->selectRaw('COUNT(DISTINCT box_id) AS total_count')
+                    ->from('rd_boxes')
+                    ->whereColumn('rd_boxes.pallet_id', 'rd_pallets.pallet_id');
+            }, 'total_count')
+            ->where('rd_pallets.shipment_id', $id)
+            ->paginate($perPage);
+
           // Append query parameters to pagination links
             $StorePallet->appends($request->query());
 
@@ -622,18 +644,13 @@ class TackbackStoreController extends Controller
     }
 
     public function updatePallet(Request $request){
-        
-        echo  $request->palletId;
         $pallet_id = $request->palletId;
-
-         $pallet = RdPallet::findOrFail($request->palletId);
-            // echo $request->boxboxQuantity;
-            // die('look into it--------------------');
+        $pallet = RdPallet::findOrFail($request->palletId);
         // // Update the box attributes
         $pallet->update([
             'box_quantity' => $request->boxboxQuantity,
         ]);
-         $materialData = [];
+        $materialData = [];
         RdPalletPackagingMaterial::where('pallet_id', $request->palletId)->delete();   
         if($request->input('material_type2') && $request->input('material_weight2')){
                 foreach ($request->input('material_type2') as $index => $type) {
@@ -660,6 +677,117 @@ class TackbackStoreController extends Controller
            
             }
         return redirect()->back()->with('success', 'Pallet updated successfully.');
-        die('updated plalettts');
+    }
+
+     public function palletBoxList(Request $request){
+       
+        $pallet_id = $request->get('pallet_id');
+        // die('boxes list');
+        // $shipment_id =  $request->get('shipment_id');
+        // $pallet_id =  $request->get('pallet_id');
+        // $StorePalletSingledata = RdPallet::where('pallet_id',  $pallet_id)->first();
+        // $storesList = RdTakebackShipment::where('shipment_id', $shipment_id)->with('brand')->first();
+        // // $StorePallet = RdPallet::where('pallet_id',  $pallet_id)->first();
+        $StorePallet = RdPallet::where('pallet_id', $pallet_id)->first();
+        $storesList = RdTakebackShipment::where('shipment_id', $StorePallet->shipment_id)->with('brand')->first();
+        // // print_r($StorePallet->boxes[0]->box_id); die('ppl111');
+        $storeBoxList = RdBox::where('pallet_id',  $pallet_id)->get();
+        // return redirect()->route('admin.stores.shipment-detail', ['id' => $shipment_id]);
+        return view('admin.stores.tackbackStorePalletBox', ['StorePallet' => $StorePallet,
+            'storesList' => $storesList, 'storeBoxList' => $storeBoxList]);
+    }
+
+    // open new box while we click save & open Next box
+    public function palletOpenNextBox(Request $request){
+        // Retrieve the pallet_id and box_id from the request
+        $palletId = $request->pallet_id;
+        $boxId = $request->box_id;
+        // Find the next record based on the provided box_id
+        $nextRecord = RdBox::where('pallet_id', $palletId)->where('box_id', '>', $boxId)
+        ->orderBy('box_id')->first();
+        $palletDetail = RdPallet::where('pallet_id', $palletId)->first();
+        if (!$nextRecord) {
+            // If no next record is found, return a response indicating no more records
+            return response()->json(['message' => 'No More boxes available']);
+            // return response()->json(['message' => 'No More boxes available'], 404);
+         }
+        // If a next record is found, return the record data
+        $data = [
+            'nextRecord' => $nextRecord,
+            'palletDetail' => $palletDetail,
+        ];
+        return response()->json($data);
+    }
+    function createBoxesAndOpen(Request $request){
+       
+        // if($request->has('materials') && !empty($request->materials)){
+        //     echo 'good';
+        // }
+        // else {
+        //     echo 'bad else';
+        // }
+        $StorePalletSingledata = RdPallet::where('pallet_id', $request->storeId)->first();
+        // Combine material type and weight arrays
+            if($request->has('materials') && !empty($request->materials)){
+                 // Access the materials array from the request
+                 
+                $materials = $request->input('materials');
+                // print_r($materials);
+                foreach ($materials as $index => $material) {
+                    // Get the weight for the current material
+                    $type = $material['type'];
+                    $weight = $material['weight'];
+                    // Skip adding entry if either type or weight is null
+                    if ($type !== null && $weight !== null) {
+                        // Create a new record in the database for the current material
+                        RdPalletPackagingMaterial::create([
+                            'shipment_id' => $StorePalletSingledata->shipment_id,
+                            'pallet_id' => $request->storeId,
+                            'material_type' => $type,
+                            'material_weight' => $weight,
+                        ]);
+                    }
+                }
+                $StorePallet = RdPallet::findOrFail($request->storeId);
+                $StorePallet->box_quantity  = $request->boxQuantity;
+                $StorePallet->status  = 1;
+                    // Save the StoreBox
+                    $StorePallet->save();
+            }
+            else {
+                // If 'materials' is empty or not provided in the request, return an error response
+                return response()->json(['error' => 'Materials array is empty or not provided'], 422); // Use the appropriate HTTP status code
+            }
+            // generate box id for that perticuler pallets and save in box tables.
+
+            for ($i = 0; $i < $request->boxQuantity; $i++) {
+                $uniqueID = RdBox::create([
+                    'box_gen_code' => uniqid(),
+                    'shipment_id' => $StorePalletSingledata->shipment_id,
+                    'pallet_id'=>$StorePalletSingledata->pallet_id,
+                    'status' => 0,
+                    'pallet_gen_code' => $StorePalletSingledata->pallet_gen_code,
+                    'brand_id' => $StorePalletSingledata->brand_id,
+                    'box_created_at' => Carbon::now(),
+                ]);
+            }
+
+            $storesList = RdTakebackShipment::where('shipment_id', $StorePalletSingledata->shipment_id)->with('brand')->first();
+            $StorePallet = RdPallet::where('pallet_id', $StorePallet->pallet_id)->first();
+            $storeBoxList = RdBox::where('pallet_id', $StorePallet->pallet_id)->get();
+            $singlePalletBox = RdBox::where('pallet_id', $StorePallet->pallet_id)->first();
+
+            $data = [
+            'pallet_id' => $StorePallet->pallet_id,
+            'shipment_id' =>  $StorePalletSingledata->shipment_id,
+            'singlePalletBox' => $singlePalletBox,
+            'StorePallet' => $StorePallet,
+            ];
+            $response = response()->json($data);
+            $response->header('Content-Type', 'application/json');
+            return $response;
+
+            //  return redirect()->route('tackbackStore.box.palllet-detail', ['pallet_id' => $StorePallet->pallet_id, 'shipment_id' => $StorePalletSingledata->shipment_id
+            // , 'singlePalletBox' => $singlePalletBox]);
     }
 }

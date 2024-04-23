@@ -122,8 +122,10 @@
                             <span class="unopned-pallet-list-status">Opened</span>
                                 <a class="shipment-list-set-alingment-icons text-decoration-none" data-bs-toggle="modal"
                                 data-bs-target="#exampleModal1"
-                                data-box-id="{{ $store->boxes[0]->box_id }}"
-                                 data-box-gen-code="{{ $store->boxes[0]->box_gen_code }}"
+                               @if(isset($store->boxes) && count($store->boxes) > 0)
+                                    data-box-id="{{ $store->boxes[0]->box_id }}"
+                                    data-box-gen-code="{{ $store->boxes[0]->box_gen_code }}"
+                                @endif
                                 data-pallet-id="{{ $store->pallet_id }}"
                                 data-pallet-gen-code="{{ $store->pallet_gen_code }}"
                                 data-pallet-weight="{{ $store->pallet_weight }}"
@@ -231,7 +233,7 @@
                             <div class="col-md-2">
                                 <input type="text" name="boxboxQuantity" class="form-control" id="boxQuantity">
                             </div>
-                                <span class="text-danger pallet-list-error-required-msg pallet-list-custom-error" id="errorMessage" style="display: none;">Quantity field is required and it should be greater than 0</span>
+                                 <span class="text-danger pallet-list-error-required-msg pallet-list-custom-error" id="errorMessage" style="display: none;">Quantity field is required and it should be greater than 0</span>
                             
                         </div>
                         <input type="hidden" name="storeId" id="storeId">
@@ -289,7 +291,7 @@
                             </button> --}}
                         </div>
                         <button type="button" class="btn btn-secondary me-2 pallet-generate-setBtnColor" data-bs-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-secondary">Save & Open Box</button>
+                        <button type="button" class="btn btn-secondary" data-route="{{ route('tackbackStore.box.creates-open-box') }}" onclick="saveAndOpenBox()">Save & Open Box</button>
                         <button type="submit" class="btn btn-secondary">Save </button>
                     </div>
                 </div>

@@ -43,12 +43,48 @@ class RdPallet extends Model
         return $this->belongsTo(RdTakebackShipment::class, 'shipment_id');
     }
 
-     /**
+    //  /**
+    //  * Accessor method to get the count of opened boxes.
+    //  */
+    // public function getOpenCountAttribute()
+    // {
+    //     return $this->storeBoxes()->where('status', 1)->count();
+    // }
+
+    // /**
+    //  * Accessor method to get the count of unopened boxes.
+    //  */
+    // public function getUnopenedCountAttribute()
+    // {
+    //     return $this->storeBoxes()->where('status', 0)->count();
+    // }
+
+    // /**
+    //  * Accessor method to get the total count of boxes.
+    //  */
+    // public function getTotalCountAttribute()
+    // {
+    //     return $this->storeBoxes()->count();
+    // }
+
+    // /**
+    //  * Relationship to fetch related store boxes.
+    //  */
+    // public function storeBoxes()
+    // {
+    //     return $this->hasMany(StoreBox::class, 'store_pallet_id');
+    // }
+    /**
      * Accessor method to get the count of opened boxes.
      */
+     public function boxes()
+    {
+        // Assuming 'pallet_id' is the foreign key in the 'rd_boxes' table that references the pallet
+        return $this->hasMany(RdBox::class, 'pallet_id');
+    }
     public function getOpenCountAttribute()
     {
-        return $this->storeBoxes()->where('status', 1)->count();
+        return $this->boxes()->where('status', 1)->count();
     }
 
     /**
@@ -56,7 +92,7 @@ class RdPallet extends Model
      */
     public function getUnopenedCountAttribute()
     {
-        return $this->storeBoxes()->where('status', 0)->count();
+        return $this->boxes()->where('status', 0)->count();
     }
 
     /**
@@ -64,22 +100,13 @@ class RdPallet extends Model
      */
     public function getTotalCountAttribute()
     {
-        return $this->storeBoxes()->count();
+        return $this->boxes()->count();
     }
 
     /**
-     * Relationship to fetch related store boxes.
+     * Relationship to fetch related boxes.
      */
-    public function storeBoxes()
-    {
-        return $this->hasMany(StoreBox::class, 'store_pallet_id');
-    }
-
-    public function boxes()
-    {
-        // Assuming 'pallet_id' is the foreign key in the 'rd_boxes' table that references the pallet
-        return $this->hasMany(RdBox::class, 'pallet_id');
-    }
+   
 
     public function palletPackagingMaterial()
     {

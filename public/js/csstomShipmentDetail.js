@@ -310,3 +310,109 @@
             });
         });
     });
+
+
+    function saveAndOpenBox() {
+     var errorMessage = document.getElementById('errorMessage');
+        var boxQuantityInput = document.getElementById('boxQuantity');
+        storeId
+
+    // Function to display the error message
+    function showError(message) {
+        errorMessage.textContent = message;
+        errorMessage.style.display = 'block';
+    }
+
+    // Function to hide the error message
+    function hideError() {
+        errorMessage.style.display = 'none';
+    }
+
+    // Perform client-side validation
+    var boxQuantity = parseInt(boxQuantityInput.value, 10);
+
+    if (isNaN(boxQuantity) || boxQuantity <= 0) {
+        showError('Quantity field is required and should be greater than 0');
+        return;
+    }
+    var saveAndOpenBoxUrl = "{{ route('tackbackStore.box.creates-open-box') }}";
+    var materialTypeInputs = document.getElementsByName('material_type[]');
+    var materialWeightInputs = document.getElementsByName('material_weight[]');
+    var storeId = document.getElementById('storeId').value;
+        // Prepare data to send
+    var data = {
+        boxQuantity: boxQuantity,
+        materials: [],
+        storeId:storeId
+    };
+    // Collect material data
+    for (var i = 0; i < materialTypeInputs.length; i++) {
+        var materialType = materialTypeInputs[i].value;
+        var materialWeight = parseFloat(materialWeightInputs[i].value);
+
+        if (materialType && !isNaN(materialWeight) && materialWeight > 0) {
+            data.materials.push({
+                type: materialType,
+                weight: materialWeight
+            });
+        }
+    }
+        console.log('check data is here==================', data);
+        //  var route = $('button[data-route]').data('route');
+        var route = document.querySelector('button[data-route]').getAttribute('data-route');
+    // If no validation errors, submit the form or perform other actions
+    // Here, I'm just logging the success message for demonstration purposes
+        console.log('Validation successful. Proceed with submitting the form or other actions.11', route);
+            // Send data to the server using AJAX
+        $.ajax({
+            url: route, // Use your Laravel route here
+            method: 'POST',
+            data: data,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Add CSRF token for Laravel
+            },
+            success: function(response) {
+                // Handle successful response
+                console.log('Response data:', response);
+                
+                 $('#exampleModal').modal('hide');
+                 $('#exampleModal1').modal('show');
+                
+                // if (response.message) {
+                //     alert('No more boxes available');
+                //     $('#saveAndOpenBtn').prop('disabled', true);
+                // } else {
+                //     var boxData = response.nextRecord;
+                //     var palletData = response.palletDetail;
+                //     // You can populate input fields or update UI elements here
+                //     $('#BoxpalletId').text(boxData.pallet_gen_code);
+                //     $('#BoxsubBrands').text(palletData.sub_brand);
+                //     $('#BoxpalletGenCode').text(boxData.box_gen_code);
+                //     $('#palletId').val(boxData.pallet_id);
+                //     $('#boxId').val(boxData.box_id);
+                //     // clear input value
+                //     $('input[name="pre_consumer"]').val('');
+                //     $('input[name="product_category"]').val('');
+                //     $('input[name="box_weight"]').val('');
+                //     $('select[name="material_type1[]"]').val('');
+                //     $('input[name="material_weight1[]"]').val('');
+                //     $('#saveAndOpenBtn').prop('disabled', false);
+                //     $('#openNextBox').modal('show');
+
+                //     // alert('Data retrieved successfully!');
+                //     // For example, display the retrieved data in a <div>
+                //     // $('#displayData').text('Category ID: ' + response.category_id + ', Weight: ' + response.weight);
+
+                //     // Optionally, you can also show a success message or perform other actions
+                // }
+            },
+            error: function(xhr, status, error) {
+                // Handle any errors
+                console.error(error);
+                alert('Failed to save data. Please try again.');
+            }
+        });
+        // alert('fine');
+        // return true;
+    // document.getElementById("myForm").submit();
+}   

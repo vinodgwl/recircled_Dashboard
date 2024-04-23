@@ -72,14 +72,15 @@
                             </div>
                              <div class="col-md-2">
                                 <label class="form-check-label" for="flexRadioDefault1">Total Box Quantity:</label>
-                                <span class="fw-bold">{{$StorePallet->box_quantity}} <i class="bi bi-pencil-square"></i></span>
+                                <span class="fw-bold">{{$StorePallet->box_quantity}} 
+                                    {{-- <i class="bi bi-pencil-square"></i></span> --}}
                             </div>
                              <div class="col-md-2">
                                 <label class="form-check-label" for="flexRadioDefault1">Opened Box:</label>
                                 <span class="fw-bold">--</span>
                             </div>
                         </div>
-                        <form id="myForm" method="post" action="{{ route('tackbackStore.box.save') }}">
+                        {{-- <form id="myForm" method="post" action="{{ route('tackbackStore.box.save') }}">
                             @csrf
                             <div class="row mt-3" style="padding-left: 15px; margin-bottom: 36px;">
                                 <div class="col-md-12">
@@ -116,13 +117,12 @@
                                 <input type="hidden" name="pallet_unique_id" id="pallet_unique_id" value="{{ $StorePallet->pallet_unique_id }}">
                                 <input type="hidden" name="shipment_id" id="shipment_id" value="{{ $storesList->shipment_id }}">
                                 <div class="col-md-2 mt-4">
-                                <!-- <button type="button" class="btn btn-secondary">Add</button> -->
                                 <button type="button" class="btn btn-secondary" onclick="validateForm()">
                                     <i class="bi bi-plus"></i> Add
                                 </button>
                                 </div>
                             </div>
-                        </form>
+                        </form> --}}
                 </div>
         {{-- </div> --}}
         <table id="dataTable" class="table table-bordered mt-4">
@@ -131,18 +131,24 @@
                     <th>Box No</th>
                     <th>Box Id</th>
                     <th>Box Weight (lbs)</th>
-                    <th>Type of Products</th>
+                    <th>Product category</th>
                     <th>Pre Consumer</th>
                     <th>Status</th>
                 </tr>
             </thead>
             <tbody>
+                 @php $serial = 1; @endphp
                   @foreach ($storeBoxList as $box)
                     <tr>
-                        <td>{{ $box->id }}</td>
-                        <td>{{$box->box_unique_id  }}</td>
+                        <td>{{ $serial }}</td>
+                        <td>{{$box->box_gen_code  }}</td>
                         <td>{{ $box->box_weight }} lbs</td>
-                         <td>{{$box->product_category}}</td>
+                        <td>@if ($box->product_category == 0)
+                             --
+                            @else
+                             {{$box->product_category}}
+                            @endif
+                        </td>
                          <td>@if ($box->pre_consumer == 0)
                               No
                             @else
@@ -159,15 +165,12 @@
                                 data-pre-consumer="{{ $box->pre_consumer }}"
                                  onclick="clearBoxQuantityData(event)">
                                     <i class="bi bi-pencil pallet-box-added-edit-icons"></i>
-                       </a>  <form id="boxform" action="{{ route('tackbackStore.box.delete', $box->id) }}" method="POST">
+                       </a>  <form id="boxform"  method="POST">
                                     @csrf
                                     @method('DELETE')
                                     <button style="margin-top:2px;" type="submit" class="btn btn-link" onclick="return confirm('Are you sure you want to delete this box?')">
                                         <i class="bi bi-trash pallet-box-added-delete-icons"></i>
                                     </button>
-                                    {{-- <a onclick="deletePalletBox({{$box->id}})">
-                                        <i class="bi bi-trash pallet-box-added-delete-icons"></i>
-                                    </a> --}}
                                 </form>  
                                 <a style="margin-top: 8px;" href="{{ route('tackbackStore.box.product-list', ['id' => $box->id]) }}">
                                      <i class="bi bi-chevron-right pallet-box-added-status-icons"></i>
@@ -187,9 +190,6 @@
                                     <button style="margin-top:2px;" type="submit" class="btn btn-link" onclick="return confirm('Are you sure you want to delete this box?')">
                                         <i class="bi bi-trash pallet-box-added-delete-icons"></i>
                                     </button>
-                                    {{-- <a onclick="deletePalletBox({{$box->id}})">
-                                        <i class="bi bi-trash pallet-box-added-delete-icons"></i>
-                                    </a> --}}
                                 </form>  
                                 <a style="margin-top: 8px;" href="{{ route('tackbackStore.box.product-list', ['id' => $box->id]) }}">
                                      <i class="bi bi-chevron-right pallet-box-added-status-icons"></i>
@@ -197,6 +197,7 @@
                             @endif
                         </td>
                     </tr>
+                    @php $serial++; @endphp
                     {{-- <input type="hidden" name="store_ids[]" id="store_ids" value="{{ $store->id }}"> --}}
                 @endforeach 
                 @if ($storeBoxList->isEmpty())

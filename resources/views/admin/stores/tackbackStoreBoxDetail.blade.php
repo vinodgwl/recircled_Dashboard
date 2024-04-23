@@ -228,7 +228,7 @@
                     {{-- <a href="{{ route('admin.stores.create') }}" class="btn btn-secondary me-2">Back</a> --}}
                     <button type="button" onclick="showToastr()" class="btn btn-secondary me-2 pallet-generate-setBtnColor">Cancel</button>
                     <a href="{{ route('admin.stores.shipment-detail', ['id' => $StorePallet->shipment_id  ]) }}" id="submitBtn" class="btn btn-secondary box-product-list-save-btn">Save</a>
-                    {{-- <button type="button" id="saveAndOpenBtn" onclick="saveAndOpen()" class="btn btn-secondary">Save & Open</button> --}}
+                    <button type="button" id="saveAndOpenBtn" data-route="{{ route('admin.tackbackStore.pallet-open-next-box', ['pallet_id' => $StorePallet->pallet_id, 'box_id' => $singleBoxDetail->box_id]) }}" onclick="saveAndOpenNextBox()" class="btn btn-secondary">Save & Open Next Box</button>
                 </div>
              </div>
         </div>
@@ -304,6 +304,122 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
                         <button type="submit" class="btn btn-secondary">Update</button>
+                    </div>
+                </div>
+            </div>
+             </form>
+        </div>
+
+        {{-- model for open Next box --}}
+        <div class="modal fade" id="openNextBox" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+             <form id="updatedmyForm" method="post" action="{{ route('tackbackStore.box.updated') }}">
+                @csrf
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title fw-bold" id="exampleModalLabel">Open Box </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                Pallet ID: <span class="fw-bold" id="BoxpalletId"></span>
+                            </div>
+                            <div class="col-md-4">
+                                Sub Brands: <span class="fw-bold" id="BoxsubBrands"></span>
+                            </div>
+                             <div class="col-md-4">
+                                {{-- @if(isset($singlePalletBox))
+                                    @endif --}}
+                                    Box Id <span class="fw-bold" id="BoxpalletGenCode"></span>
+                            </div>
+                        </div>
+                        <div class="row mt-4">
+                            <div >
+                                <div class="row mb-3 material-field">
+                                    <h4 class="fw-bold">Add Box Detail</h4>
+                                    <div class="col-md-4">
+                                        <label for="logo" class="form-label">weight (lbs)</label>
+                                        <input type="number" class="form-control" name="box_weight" id="box_weight"
+                                            placeholder="Weight">
+                                             <div id="boxWeightValidation" class="text-danger"></div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="exampleFormControlInput1" class="form-label">Product Category</label>
+                                        <select name="product_category" id="product_category" class="form-select" aria-label="Default select example">
+                                            <option selected value="">Select Product</option>
+                                            <option value="cloth">Clothes</option>
+                                            <option value="plastic">Plastic</option>
+                                            <option value="wood">Wood</option>
+                                        </select>
+                                         <div id="productCategoryValidation" class="text-danger"></div>
+                                    </div>
+                                    
+                                    <div class="col-md-4">
+                                        <label for="exampleFormControlInput1" class="form-label">Pre Consumer</label>
+                                        <select name="pre_consumer" id="pre_consumer" class="form-select" aria-label="Default select example">
+                                            <option value="yes">Yes</option>
+                                            <option value="no">No</option>
+                                        </select>
+                                    </div>
+                                   <input type="hidden" name="palletId" id="palletId">
+                                   <input type="hidden" name="boxId" id="boxId">
+                                     {{-- <div id="errorMessage1" class="text-danger" style="display: none;"></div> --}}
+                                </div>
+                                <!-- Dynamic material fields will be added here -->
+                            </div>
+                        </div>
+                         <div class="row">
+                            <div class="col-md-9">
+                                 <h4 class="mt-4 fw-bold">Box Packaging Material</h4>
+                            </div>
+                            <div class="col-md-3 mt-3">
+                                  <button style="margin-left: 10px" type="button" id="addMaterialBtn1"
+                                class="btn btn-secondary">
+                                <i class="bi bi-plus"></i> Add New Material
+                            </button>
+                            </div>
+                         </div>
+                       
+                        <div class="row mt-4">
+                            <div id="materialFields1">
+                                <div class="row mb-3 material-field">
+                                    <div class="col-md-4">
+                                        <label for="logo" class="form-label">Material Type:</label>
+                                        <select class="form-select" name="material_type1[]">
+                                            <option value="">material type</option>
+                                            <option value="paper">Paper</option>
+                                            <option value="wood">Wood</option>
+                                            <option value="plastic">Plastic</option>
+                                            <option value="shrink-wrap">Shrink-Wrap</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="logo" class="form-label">Material weight (lbs)</label>
+                                        <input type="number" class="form-control" name="material_weight1[]"
+                                            placeholder="Weight">
+                                    </div>
+                                    <div class="col-auto">
+                                        <button class="btn btn-danger cancel-btn" type="button" style="background-color: transparent; border: none;">
+                                            <i class="bi bi-x" style="font-size: 1.5rem;"></i>
+                                        </button>
+
+                                        {{-- <button class="btn btn-danger cancel-btn" type="button">
+                                            <i class="bi bi-x"></i>
+                                        </button> --}}
+                                    </div>
+                                </div>
+                                <!-- Dynamic material fields will be added here -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="col-md-6 text-left"> <!-- This column takes up half of the width -->
+                           
+                        </div>
+                        <button type="button" class="btn btn-secondary me-2 pallet-generate-setBtnColor" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-secondary">Save & Continue</button>
+                        {{-- <button type="submit" class="btn btn-secondary">Save </button> --}}
                     </div>
                 </div>
             </div>
