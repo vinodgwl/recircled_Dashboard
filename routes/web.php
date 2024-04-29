@@ -5,6 +5,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\TackbackStoreController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\TranslationController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -20,7 +21,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+
+
+
 
 Auth::routes();
 
@@ -35,6 +38,9 @@ Route::get('admin/newdashboard', function () {
 
 Route::middleware(['auth'])->group(function () {
     // Define your admin routes here
+    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+
+    // Route::get('/admin/newdashboard/', [AdminController::class, 'newdashboard'])->name('admin.dashboard');
 
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
@@ -99,6 +105,28 @@ Route::middleware(['auth'])->group(function () {
      Route::get('/admin/tackback-store/pallet-open-next-box-', [TackbackStoreController::class, 'palletOpenNextBox'])->name('admin.tackbackStore.pallet-open-next-box');
 
      Route::post('/admin/tackback-store/create-boxes-and-open', [TackbackStoreController::class, 'createBoxesAndOpen'])->name('tackbackStore.box.creates-open-box');
+
+    //  Translation routes
+    Route::get('/admin/translations/create', [TranslationController::class, 'index'])->name('admin.translations.index');
+    Route::post('/admin/translations/save', [TranslationController::class, 'store'])->name('admin.translations.store');
+
+    Route::get('/export-sample-csv', [TranslationController::class, 'exportSampleCsv'])->name('admin.translations.export.sample.csv');
+
+    Route::get('/{lang?}', function ($lang) {
+    app()->setLocale($lang);
+    // if (isset($locale) && in_array($locale, config('app.available_locales'))) {
+    //     app()->setLocale($locale);
+
+    // }
+        
+        return view('welcome');
+    });
+
+    //     Route::get('language/{locale}', function ($locale) {
+    //     app()->setLocale($locale);
+    //     session()->put('locale', $locale);
+    //     return redirect()->back();
+    // });
 });
 
 

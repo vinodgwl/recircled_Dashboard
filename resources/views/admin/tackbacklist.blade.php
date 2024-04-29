@@ -6,7 +6,8 @@
         <!-- <h1>Admin Dashboard</h1> -->
         <div class="card">
             <div class="card-header">
-                Tackback Products
+                {{-- Tackback Products --}}
+                {{ __('message.total_products') }}
             </div>
             @if(session('success'))
             <div id="successMessage" class="alert alert-success">
@@ -184,8 +185,14 @@
         <div class="p-4">
             <div class="row justify-content-center">
             <div class="col-auto">
-                <button type="button" class="btn btn-secondary me-2">Cancel</button>
-                <button type="submit" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-secondary me-2">
+                    {{-- Cancel --}}
+                     {{ __('message.cancel') }}
+                </button>
+                <button type="submit" class="btn btn-primary">
+                    {{-- Save --}}
+                     {{ __('message.save') }}
+                </button>
             </div>
         </div>
         </div>

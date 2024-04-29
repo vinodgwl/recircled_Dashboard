@@ -17,8 +17,10 @@ class BrandController extends Controller
         return view('brands.index', ['brands' => $brands]);
     }
 
-    public function create()
+    public function create(Request $request)
     {
+        $lang = $request->query('lang', 'en');
+        app()->setLocale($lang);
         return view('brands.create');   
     }
 

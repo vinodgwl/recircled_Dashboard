@@ -9,15 +9,24 @@ use App\Models\TrackbackProduct;
 
 class AdminController extends Controller
 {
-    public function dashboard()
+    public function dashboard(Request $request)
     {
+        $lang = $request->query('lang', 'en');
         $users = User::all(); // Fetching dummy users data
+        app()->setLocale($lang);
         return view('admin.dashboard', compact('users'));
     }
-    public function tackbackList()
+    public function newdashboard($lang){
+        $users = User::all(); 
+        app()->setLocale($lang);
+        return view('admin.dashboard', compact('users'));
+    }
+    public function tackbackList(Request $request)
     {
+        $lang = $request->query('lang', 'en');
         $users = User::all(); // Fetching dummy users data
         $brands = Brand::all();
+        app()->setLocale($lang);
         return view('admin.tackbacklist', compact('users', 'brands'));
     }
     public function store(Request $request)

@@ -6,7 +6,10 @@
         <!-- <h1>Admin Dashboard</h1> -->
         {{-- <div class="card"> --}}
             <div class="card-header p-1 mt-2 ">
-               <h4 class="new-tackback"> New Tackback</h4> 
+               <h4 class="new-tackback"> 
+                {{-- New Tackback --}}
+                {{ __('message.new_tackback') }}
+            </h4> 
             </div>
             @if(session('success'))
             <div id="successMessage" class="alert alert-success">
@@ -146,9 +149,15 @@
            <div class="row ">
             <div class="col-auto d-flex set-create-btn">
                 <div class="me-2">
-                    <a href="{{ route('tackback.stores.cancel') }}" class="btn btn-secondary create-store-btn-size" style="background-color: #ffffff; color: #000000;">Cancel</a>
+                    <a href="{{ route('tackback.stores.cancel') }}" class="btn btn-secondary create-store-btn-size" style="background-color: #ffffff; color: #000000;">
+                        {{-- Cancel --}}
+                         {{ __('message.cancel') }}
+                    </a>
                 </div>
-                <button type="submit" class="btn btn-secondary create-store-btn-size">Next</button>
+                <button type="submit" class="btn btn-secondary create-store-btn-size">
+                    {{-- Next --}}
+                    {{ __('message.next') }}
+                </button>
             </div>
         </div>
 

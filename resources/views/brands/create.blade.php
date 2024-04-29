@@ -19,7 +19,8 @@
             @csrf
         <div class="card">
             <div class="card-header">
-                New Parent Brand
+                {{-- New Parent Brand --}}
+                {{ __('message.new_parent_brand') }}
             </div>
             <div class="card-body">
                 <div class="p-3">
@@ -181,8 +182,14 @@
         <div class="p-4">
             <div class="row justify-content-center">
             <div class="col-auto">
-                <button type="button" class="btn btn-danger me-2">Cancel</button>
-                <button type="submit" class="btn btn-secondary">Save Brand</button>
+                <button type="button" class="btn btn-danger me-2">
+                    {{-- Cancel --}}
+                    {{ __('message.cancel') }}
+                </button>
+                <button type="submit" class="btn btn-secondary">
+                    {{-- Save Brand --}}
+                    {{ __('message.save_brand') }}
+                </button>
             </div>
         </div>
         </div>

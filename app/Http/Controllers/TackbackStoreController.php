@@ -22,9 +22,11 @@ use Illuminate\Http\Request;
 
 class TackbackStoreController extends Controller
 {
-    public function create()
+    public function create(Request $request)
     {
         // Return a view for creating a new brand
+        $lang = $request->query('lang', 'en');
+        app()->setLocale($lang);
         $brands = Brand::all();  
         // Return a view and pass the fetched brands to it
         $step1_data = Session::get('step1_data');
@@ -144,6 +146,8 @@ class TackbackStoreController extends Controller
     public function tackbackStoreSaveList(Request $request){
         // Return a view for creating a new brand
         // Fetch the last inserted ID from the request
+        $lang = $request->query('lang', 'en');
+        app()->setLocale($lang);
         $quantity = $request->get('quantity')?$request->get('quantity'): 0;
         $perPage = 5;
         // $stores = TackbackStore::orderByDesc('id')->get()->reverse();

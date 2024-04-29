@@ -47,7 +47,7 @@ function showToastr() {
 
 function saveAndOpen() {
     // Set the form action URL to the desired route for "Save & Open"
-    document.getElementById("palletForm").action = "{{ route('trackbackProductSaveAndOpen.update.stores') }}";
+    document.getElementById("translationForm").action = "{{ route('trackbackProductSaveAndOpen.update.stores') }}";
     // Submit the form
     var form = document.getElementById("palletForm");
     // Perform client-side validation

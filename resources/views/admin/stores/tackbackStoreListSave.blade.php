@@ -9,11 +9,13 @@
                 {{-- <h4>All Tackback<h4> --}}
                      <div class="mt-2 set-btn-alingments">
                         <a href="{{ route('admin.stores.create-store') }}" class="btn btn-secondary">
-                                Back
+                                {{-- Back --}}
+                                {{ __('message.back') }}
                         </a>
                     </div>
                     <div class="col-md-2 mt-1">
-                        <h4>All Tackback<h4> 
+                        {{-- <h4>All Tackback<h4>  --}}
+                            <h4>{{ __('message.all_tackback') }}<h4> 
                     </div>
                    
                     <form id="filterForm" method="GET" action="{{ route('admin.stores.brand-filter') }}">

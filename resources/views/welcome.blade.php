@@ -43,7 +43,7 @@
                 </div> -->
                 <div class="card">
                 <div class="card-body">
-                   Dashboard
+                   Dashboard language
                    <!-- <button type="button" class="btn btn-primary">
                     <i class="bi bi-plus"></i> Add
                   </button> -->
