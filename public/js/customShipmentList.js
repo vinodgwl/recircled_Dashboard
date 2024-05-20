@@ -17,9 +17,9 @@
                             var newRow = '<tr>' +
                                 '<td>' + data.shipment_information_id + '</td>' +
                                 '<td>' + data.shipment_created_at + '</td>' +
-                                '<td>' + data.trackback_type_store_customer_warehouse + '</td>' +
+                                '<td>' + data.takeback_type.takeback_name + '</td>' +
                                 '<td>' + data.total_weight + '</td>' +
-                                '<td>' + '--' +'</td>' +
+                                '<td>' + data.status_1_count +'/'+ data.pallet_qty +'</td>' +
                                 '<td>' + '--' + '</td>' +
                                 // Add more table data as needed
                                 '</tr>';
@@ -75,13 +75,23 @@
                 console.log('wow data========', data);
                 if(data.length > 0){
                     // Add new rows for each search result
-                    $.each(data, function(index, item) {
+                    $.each(data, function (index, item) {
+                        //  var statusColor = item.status == 0 ? 'red' : 'black';
+                        //     var statusText = item.status == 0 ? 'Unopened' : 'Opened';
+
+                        //     var routeUrl = "{{ route('admin.stores.shipment-detail', ['id' => ':shipment_id']) }}";
+                        //     routeUrl = routeUrl.replace(':shipment_id', item.shipment_id);
                         var row = '<tr>' +
                             '<td>' + item.shipment_information_id + '</td>' +
                             '<td>' + item.shipment_created_at + '</td>' +
-                            '<td>' + item.trackback_type_store_customer_warehouse + '</td>' +
+                            '<td>' + item.takeback_type.takeback_name + '</td>' +
                             '<td>' + item.total_weight + '</td>' +
-                            '<td>--</td>' +
+                            '<td>' + item.status_1_count + '/' + item.pallet_qty + '</td>' +
+                            //  '<td>' +
+                            //     '<a href="' + routeUrl + '">' +
+                            //     '<i class="bi bi-chevron-right shipment-list-status-icons"></i>' +
+                            //     '</a>' +
+                            //     '</td>' +
                             '<td>--</td>' +
                             '</tr>';
                         $('#dataTable tbody').append(row);

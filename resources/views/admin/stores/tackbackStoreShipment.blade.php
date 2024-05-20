@@ -53,11 +53,11 @@
                             </div>
                             <div class="col-md-2">
                                 <label class="form-check-label" for="flexRadioDefault1">Tackback Type:</label>
-                                <span class="fw-bold">{{$storesList->trackback_type_store_customer_warehouse}}</span>
+                                <span class="fw-bold">{{$storesList->takebackType->takeback_name}}</span>
                             </div>
                             <div class="col-md-2">
                                 <label class="form-check-label" for="flexRadioDefault1">Total Pallet:</label>
-                                <span class="fw-bold">{{$storesList->quantity}}</span>
+                                <span class="fw-bold">{{$storesList->pallet_qty}}</span>
                             </div>
                             <div class="col-md-2">
                                 <label class="form-check-label" for="flexRadioDefault1">Opened Pallet:</label>
@@ -68,8 +68,8 @@
                                 <span class="fw-bold">{{$storesList->total_weight}}</span>
                             </div>
                             <div class="col-md-2">
-                                <label class="form-check-label" for="flexRadioDefault1">Date & Time</label>
-                                <span class="fw-bold"> {{\Carbon\Carbon::parse($storesList->created_store_date_time)->format('d/m/y h:i:s A')}}</span>
+                                <label class="form-check-label" for="flexRadioDefault1">Date & Time11</label>
+                                <span class="fw-bold"> {{\Carbon\Carbon::parse($storesList->shipment_created_at)->format('d/m/y h:i:s A')}}</span>
                             </div>
                         </div>
                     </div>
@@ -91,9 +91,9 @@
                  @foreach ($StorePallet as $store)
                     <tr>
                         <td>{{ $serial }}</td> <!-- Serial number -->
-                        <td>{{$store->pallet_gen_code }}</td>
+                        <td>{{$store->pallet_code }}</td>
                         <td>{{ $store->pallet_weight }} lbs</td>
-                         <td>{{$store->sub_brand}}</td>
+                         <td>{{$store->sub_brand}}--</td>
                           {{-- <td>{{ $store->open_count }}/{{ $store->total_count }}</td> --}}
                            <td>--</td>
                          {{-- <td>{{ $store->status_1_count + $store->status_0_count }} ({{$store->status_1_count}}/{{ $store->status_1_count + $store->status_0_count }})</td> --}}
@@ -111,7 +111,7 @@
                                 <a data-bs-toggle="modal" class="text-decoration-none"
                                 data-bs-target="#exampleModal"
                                 data-store-id="{{ $store->pallet_id }}"
-                                data-pallet-id="{{ $store->pallet_gen_code }}"
+                                data-pallet-id="{{ $store->pallet_code }}"
                                 data-pallet-weight="{{ $store->pallet_weight }}"
                                 data-sub-brands="{{ $store->sub_brand }}"
                                 href="#" onclick="clearBoxQuantityData(event)">
@@ -124,10 +124,10 @@
                                 data-bs-target="#exampleModal1"
                                @if(isset($store->boxes) && count($store->boxes) > 0)
                                     data-box-id="{{ $store->boxes[0]->box_id }}"
-                                    data-box-gen-code="{{ $store->boxes[0]->box_gen_code }}"
+                                    data-box-gen-code="{{ $store->boxes[0]->box_code }}"
                                 @endif
                                 data-pallet-id="{{ $store->pallet_id }}"
-                                data-pallet-gen-code="{{ $store->pallet_gen_code }}"
+                                data-pallet-gen-code="{{ $store->pallet_code }}"
                                 data-pallet-weight="{{ $store->pallet_weight }}"
                                 data-sub-brands="{{ $store->sub_brand }}"
                                 href="#" onclick="clearBoxData(event)">

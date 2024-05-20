@@ -127,6 +127,12 @@ Route::middleware(['auth'])->group(function () {
     //     session()->put('locale', $locale);
     //     return redirect()->back();
     // });
+
+    // Route::get('admin/datatable', function () {
+    //     return view('admin/datatable');
+    // });
+
+    Route::get('/admin/datatable', [AdminController::class, 'getUserList'])->name('admin.user.list');
 });
 
 

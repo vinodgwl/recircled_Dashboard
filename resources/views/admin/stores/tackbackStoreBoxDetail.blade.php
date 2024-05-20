@@ -48,7 +48,7 @@
                             </div>
                             <div class="col-md-2">
                                 <label class="form-check-label" for="flexRadioDefault1">Tackback Type:</label>
-                                <span class="fw-bold">{{$storesList->trackback_type_store_customer_warehouse}}</span>
+                                <span class="fw-bold">{{$storesList->takebackType->takeback_name}}</span>
                             </div>
                             <div class="col-md-2">
                                 <label class="form-check-label" for="flexRadioDefault1">Box weight:</label>
@@ -56,7 +56,7 @@
                             </div>
                             <div class="col-md-3">
                                 <label class="form-check-label" for="flexRadioDefault1">Date & Time</label>
-                                <span class="fw-bold"> {{$singleBoxDetail->box_created_at}}</span>
+                                <span class="fw-bold"> {{$singleBoxDetail->created_at}}</span>
                             </div>
                         </div>
                     </div>
@@ -87,9 +87,9 @@
                                             <label for="exampleFormControlInput1" class="form-label">Product</label>
                                             <select name="product_name" class="form-select" aria-label="Default select example">
                                                 <option selected value="">Select Product</option>
-                                                <option value="cloth">Cloth</option>
-                                                <option value="jeans">Jeans</option>
-                                                <option value="dress">Dress</option>
+                                                <option value="1">Cloth</option>
+                                                <option value="2">Jeans</option>
+                                                <option value="3">Dress</option>
                                             </select>
                                             @error('product_name')
                                             <span class="alert text-danger create-error-required-msg">{{ $message }}</span>
@@ -99,9 +99,9 @@
                                             <label for="exampleFormControlInput1" class="form-label">Tier</label>
                                             <select name="product_tier" class="form-select" aria-label="Default select example">
                                                 <option selected value="">Select Tier</option>
-                                                <option value="tier-1">Tier-1</option>
-                                                <option value="tier-2">Tier-2</option>
-                                                <option value="tier-3">Tier-3</option>
+                                                <option value="1">Tier-1</option>
+                                                <option value="2">Tier-2</option>
+                                                <option value="3">Tier-3</option>
                                             </select>
                                             @error('product_tier')
                                             <span class="alert text-danger create-error-required-msg">{{ $message }}</span>
@@ -176,7 +176,7 @@
                         <td style="display: flex;">
                         <a style="margin-top: 9px" data-bs-toggle="modal"
                                 data-bs-target="#exampleModal"
-                                data-product-id="{{ $product->product_id }}"
+                                data-product-id="{{ $product->box_product_id  }}"
                                 data-product-name="{{ $product->product_name }}"
                                 data-product-tier="{{ $product->product_tier }}"
                                 data-product-quantity="{{ $product->product_quantity }}"
@@ -184,7 +184,7 @@
                                 data-good-resale-condition="{{ $product->good_resale_condition }}"
                                  onclick="clearBoxQuantityData(event)">
                                     <i class="bi bi-pencil pallet-box-added-edit-icons"></i>
-                       </a>  <form id="boxform" action="{{ route('tackbackStore.box.product.delete', $product->product_id) }}" method="POST">
+                       </a>  <form id="boxform" action="{{ route('tackbackStore.box.product.delete', $product->box_product_id ) }}" method="POST">
                                     @csrf
                                     @method('DELETE')
                                     <button style="margin-top:2px;" type="submit" class="btn btn-link" onclick="return confirm('Are you sure you want to delete this box?')">

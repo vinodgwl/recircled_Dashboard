@@ -17,6 +17,9 @@ use Illuminate\Support\Collection;
 use Carbon\Carbon;
 use Session;
 use Illuminate\Support\Facades\DB;
+use App\Models\RdTakebackType;
+use App\Models\RdShippingCareerType;
+use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Http\Request;
 
@@ -28,9 +31,12 @@ class TackbackStoreController extends Controller
         $lang = $request->query('lang', 'en');
         app()->setLocale($lang);
         $brands = Brand::all();  
+        $takebackTypes  = RdTakebackType::all();  
+        $shippingCarrierTypes = RdShippingCareerType::all();  
         // Return a view and pass the fetched brands to it
         $step1_data = Session::get('step1_data');
-        return view('admin.stores.create', ['brands' => $brands, 'prevois_store_data'=> $step1_data]);
+        return view('admin.stores.create', ['brands' => $brands, 'shippingCarrierTypes' =>$shippingCarrierTypes,
+         'takebackTypes' => $takebackTypes , 'prevois_store_data'=> $step1_data]);
     }
 
     public function createStore(){
@@ -42,42 +48,54 @@ class TackbackStoreController extends Controller
     {
         // add validation 
         $request->validate([
-            'quantity' => 'required|integer|min:1',
+            'pallet_qty' => 'required|integer|min:1',
             'total_weight' => 'required|integer|min:1',
-            'trackback_type_store_customer_warehouse' => 'required',
+            'takeback_id' => 'required',
             'brand_id' => 'required',
             'shipment_information_id' => 'required|unique:rd_takeback_shipments,shipment_information_id',
             'shipping_origin_zipcode' => 'required',
             'shipping_carrier' => 'required',
             'shipping_carrier_name' => 'required',
-            'box_type' => 'required',
+            'shipment_type' => 'required',
 
         ], [
-            'trackback_type_store_customer_warehouse.required' => 'The Tackback Type field is required.',
-            'quantity.min' => 'The quantity should be greater than 0',
+            'takeback_id.required' => 'The Tackback Type field is required.',
+            'pallet_qty.min' => 'The quantity should be greater than 0',
             'total_weight.min' => 'The quantity should be greater than 0',
             'shipment_information_id.unique' => 'Shipment id already exist',
+            'shipping_carrier_name' => 'The shipping carrier Name field is required.',
             // Add other custom messages here
         ]);
         // echo 'check all object---------- </br>';
-         $quantity = $request->input('quantity');
-          $asn_on = $request->asn == 'on'?1:0;
+         $quantity = $request->input('pallet_qty');
+          $is_asn = $request->is_asn == 'on'?1:0;
          // save information to the tackback store table
+        //  print_r('check all the informations before save=============');
+        $userId = Auth::id();
         //  die('ok');
+         
         $takebackShipment = new RdTakebackShipment([
-            'trackback_type_store_customer_warehouse' => $request->trackback_type_store_customer_warehouse,
-            'asn' => $asn_on,
+            'takeback_id' => $request->takeback_id,
+            'is_asn' => $is_asn,
+            'asn_id' => 1,
             'brand_id' => $request->brand_id,
             'shipment_information_id' => $request->shipment_information_id,
             'shipping_origin_zipcode' => $request->shipping_origin_zipcode,
             'shipping_carrier' => $request->shipping_carrier,
-            'shipping_carrier_name' => $request->shipping_carrier_name,
-            'box_type' => $request->box_type,
-            'quantity' => $request->quantity,   
+            'shipping_career_id' => $request->shipping_carrier_name,
+            'shipment_type' => $request->shipment_type,
+            'pallet_qty' => $quantity,   
             'total_weight' => $request->total_weight,
+            'shipment_tracking_code' => '0000',
+            'shipment_tracking_URL' => 'Default/url',
+            'added_by'=> $userId,
+            'updated_by' => $userId,
+            'approved_by' => 0,
             'shipment_created_at' => Carbon::now(),
             'status' => 0,
         ]);
+        //  print_r($takebackShipment);
+        //  die('ok');
         //  if ($validator->fails()) {
         //         return redirect()->back()->withErrors($validator)->withInput();
         //     }
@@ -87,11 +105,15 @@ class TackbackStoreController extends Controller
          $uniqueIDs = [];
         for ($i = 0; $i < $quantity; $i++) {
             $uniqueID = RdPallet::create([
-            'pallet_gen_code' => uniqid(),
+            // 'box_count' =>$quantity,
+            'pallet_code' => uniqid(),
             'shipment_id'=>$takebackShipment->id,
             'pallet_created_at' => Carbon::now(),
-            'status' => 0,
+            'approved_status' => 0,
             'brand_id' => $request->brand_id,
+            'approved_by' => $userId,
+            'added_by' => $userId,
+            'updated_by' => $userId
         ]);
             $uniqueIDs[] = $uniqueID;
         }
@@ -107,7 +129,7 @@ class TackbackStoreController extends Controller
         $shimpent_id = $request->get('shimpent_id')?$request->get('shimpent_id'): 0;
         $perPage = 5;
         $stores = RdPallet::where('shipment_id', $shimpent_id)->latest()->get();
-        $latestStoreDetail = RdTakebackShipment::orderByDesc('shipment_id')->with('brand')->first();
+        $latestStoreDetail = RdTakebackShipment::orderByDesc('shipment_id')->with('brand')->with('takebackType')->first();
         // Return a view and pass the fetched brands to it
         return view('admin.stores.index', ['stores' => $stores, 'latestStoreDetail' => $latestStoreDetail]);
     }
@@ -116,7 +138,7 @@ class TackbackStoreController extends Controller
         foreach ($request->store_ids as $key => $store_id) {
             // $store = RdPallet::find($store_id);
             $store = RdPallet::where('pallet_id', $store_id)->first();
-            $store->sub_brand = $request->sub_brand[$key];
+            // $store->sub_brand = $request->sub_brand[$key];
             $store->pallet_weight = $request->pallet_weight[$key];
             $store->pallet_created_at = Carbon::now();
             $store->save();
@@ -183,10 +205,10 @@ class TackbackStoreController extends Controller
            $stores = RdTakebackShipment::select(
                 'rd_takeback_shipments.shipment_id', // Specify table name for shipment_id
                 'shipment_information_id',
-                'shipping_carrier_name',
-                'trackback_type_store_customer_warehouse',
+                'shipping_career_id',
+                'takeback_id',
                 'total_weight',
-                'quantity',
+                'pallet_qty',
                 'shipment_created_at',
                 DB::raw('SUM(CASE WHEN rd_pallets.status = 0 THEN 1 ELSE 0 END) AS status_0_count'),
                 DB::raw('SUM(CASE WHEN rd_pallets.status = 1 THEN 1 ELSE 0 END) AS status_1_count')
@@ -197,8 +219,8 @@ class TackbackStoreController extends Controller
                       ->from('rd_takeback_shipments')
                       ->groupBy('shipment_id');
             })
-            ->groupBy('rd_takeback_shipments.shipment_id', 'shipment_information_id', 'shipping_carrier_name',  'trackback_type_store_customer_warehouse', 'total_weight', 'quantity', 'shipment_created_at') // Adding GROUP BY clause
-            ->orderByDesc('rd_takeback_shipments.shipment_id')
+            ->groupBy('rd_takeback_shipments.shipment_id', 'shipment_information_id', 'shipping_career_id',  'takeback_id', 'total_weight', 'pallet_qty', 'shipment_created_at') // Adding GROUP BY clause
+            ->orderByDesc('rd_takeback_shipments.shipment_id')->with('takebackType')
             ->paginate($perPage);
 
 
@@ -209,36 +231,143 @@ class TackbackStoreController extends Controller
         return view('admin.stores.tackbackStoreListSave', ['stores' => $stores, 'latestStoreDetail' => $latestStoreDetail, 
         'brands' =>$brands]);
     }
-    public function cancelForm(){
+    public function cancelForm(Request $request){
         Session::forget('step1_data');
+        $lang = $request->query('lang', 'en');
+        app()->setLocale($lang);
         $brands = Brand::all();  
+        $takebackTypes  = RdTakebackType::all();  
+        $shippingCarrierTypes = RdShippingCareerType::all();  
         // Return a view and pass the fetched brands to it
         // $step1_data = Session::get('step1_data');
         
-        return view('admin.stores.create', ['brands' => $brands]);
+        return view('admin.stores.create', ['brands' => $brands, 'shippingCarrierTypes' =>$shippingCarrierTypes,
+         'takebackTypes' => $takebackTypes]);
         
     }
     public function filterBrands(Request $request){
+        // $brandId = $request->input('brand_id');
+        //  $brands = Brand::all();  
+        // // Fetch data based on the brand ID
+        // $stores = RdTakebackShipment::where('brand_id', $brandId)->with('takebackType')->get();
+        // if (empty($brandId)) {
+        //     $stores = RdTakebackShipment::with('takebackType')->all();
+        // }
+        // return response()->json($stores);
         $brandId = $request->input('brand_id');
-         $brands = Brand::all();  
-        // Fetch data based on the brand ID
-        $stores = RdTakebackShipment::where('brand_id', $brandId)->get();
-        if (empty($brandId)) {
-            $stores = RdTakebackShipment::all();
-        }
-        return response()->json($stores);
+    $brands = Brand::all();  
+    
+    // Fetch data based on the brand ID
+    $stores = RdTakebackShipment::query()
+        ->select(
+            'rd_takeback_shipments.shipment_id',
+            'shipment_information_id',
+            'shipment_created_at',
+            'shipping_career_id',
+            'takeback_id',
+            'total_weight',
+            'pallet_qty',
+            'shipment_created_at',
+            DB::raw('COUNT(CASE WHEN rd_pallets.status = 0 THEN 1 ELSE NULL END) AS status_0_count'),
+            DB::raw('COUNT(CASE WHEN rd_pallets.status = 1 THEN 1 ELSE NULL END) AS status_1_count')
+        )
+        ->leftJoin('rd_pallets', 'rd_takeback_shipments.shipment_id', '=', 'rd_pallets.shipment_id')
+        ->whereIn('rd_takeback_shipments.shipment_id', function($query) {
+            $query->selectRaw('MAX(shipment_id)')
+                ->from('rd_takeback_shipments')
+                ->groupBy('shipment_id');
+        })
+        ->where('rd_takeback_shipments.brand_id', $brandId) // Specify the table for brand_id
+        ->groupBy('rd_takeback_shipments.shipment_id', 'shipment_information_id', 'shipping_career_id', 'takeback_id', 'total_weight', 'pallet_qty', 'shipment_created_at')
+        ->orderByDesc('rd_takeback_shipments.shipment_id')->with('takebackType')
+        ->get();
+
+    // If brandId is empty, fetch all records
+    if (empty($brandId)) {
+        // $stores = RdTakebackShipment::with('takebackType')->get();
+        $stores = RdTakebackShipment::select(
+                'rd_takeback_shipments.shipment_id', // Specify table name for shipment_id
+                'shipment_information_id',
+                'shipping_career_id',
+                'takeback_id',
+                'total_weight',
+                'pallet_qty',
+                'shipment_created_at',
+                DB::raw('SUM(CASE WHEN rd_pallets.status = 0 THEN 1 ELSE 0 END) AS status_0_count'),
+                DB::raw('SUM(CASE WHEN rd_pallets.status = 1 THEN 1 ELSE 0 END) AS status_1_count')
+            )
+            ->leftJoin('rd_pallets', 'rd_takeback_shipments.shipment_id', '=', 'rd_pallets.shipment_id')
+            ->whereIn('rd_takeback_shipments.shipment_id', function($query) {
+                $query->selectRaw('MAX(shipment_id)')
+                      ->from('rd_takeback_shipments')
+                      ->groupBy('shipment_id');
+            })
+            ->groupBy('rd_takeback_shipments.shipment_id', 'shipment_information_id', 'shipping_career_id',  'takeback_id', 'total_weight', 'pallet_qty', 'shipment_created_at') // Adding GROUP BY clause
+            ->orderByDesc('rd_takeback_shipments.shipment_id')->with('takebackType')
+            ->get();
+    }
+
+    return response()->json($stores);
     }
 
     public function searchStore(Request $request){
         $query = $request->input('query');
         if(!empty($query)) { 
-            $results = RdTakebackShipment::query()
-        // ->where('name', 'like', "%{$query}%")
-        ->Where('trackback_type_store_customer_warehouse', 'like', "%{$query}%")
-        ->orWhere('shipment_information_id', 'like', "%{$query}%")
+        //     $results = RdTakebackShipment::query()
+        // // ->where('name', 'like', "%{$query}%")
+        // ->Where('takeback_id', 'like', "%{$query}%")
+        // ->orWhere('shipment_information_id', 'like', "%{$query}%")
+        // ->get();
+        $results = RdTakebackShipment::query()
+        ->select(
+            'rd_takeback_shipments.shipment_id',
+            'shipment_information_id',
+            'shipping_career_id',
+            'takeback_id',
+            'total_weight',
+            'pallet_qty',
+            'shipment_created_at',
+            DB::raw('COUNT(CASE WHEN rd_pallets.status = 0 THEN 1 ELSE NULL END) AS status_0_count'),
+            DB::raw('COUNT(CASE WHEN rd_pallets.status = 1 THEN 1 ELSE NULL END) AS status_1_count')
+        )
+        ->leftJoin('rd_pallets', 'rd_takeback_shipments.shipment_id', '=', 'rd_pallets.shipment_id')
+        ->whereIn('rd_takeback_shipments.shipment_id', function($subquery) {
+            $subquery->selectRaw('MAX(shipment_id)')
+                ->from('rd_takeback_shipments')
+                ->groupBy('shipment_id');
+        })
+        ->where(function ($queryBuilder) use ($query) {
+            $queryBuilder->where('takeback_id', 'like', "%{$query}%")
+                ->orWhere('shipment_information_id', 'like', "%{$query}%")
+                ->orWhereHas('takebackType', function($innerQuery) use ($query) {
+                    $innerQuery->where('takeback_name', 'like', "%{$query}%"); // Filter by takeback_name
+                });
+        })
+        ->with('takebackType')  // Eager load the takebackType relationship
+        ->groupBy('rd_takeback_shipments.shipment_id', 'shipment_information_id', 'shipping_career_id',  'takeback_id', 'total_weight', 'pallet_qty', 'shipment_created_at')
+        ->orderByDesc('rd_takeback_shipments.shipment_id')
         ->get();
         } else {
-            $results = RdTakebackShipment::all();
+            $results = RdTakebackShipment::select(
+                'rd_takeback_shipments.shipment_id', // Specify table name for shipment_id
+                'shipment_information_id',
+                'shipping_career_id',
+                'takeback_id',
+                'total_weight',
+                'pallet_qty',
+                'shipment_created_at',
+                DB::raw('SUM(CASE WHEN rd_pallets.status = 0 THEN 1 ELSE 0 END) AS status_0_count'),
+                DB::raw('SUM(CASE WHEN rd_pallets.status = 1 THEN 1 ELSE 0 END) AS status_1_count')
+            )
+            ->leftJoin('rd_pallets', 'rd_takeback_shipments.shipment_id', '=', 'rd_pallets.shipment_id')
+            ->whereIn('rd_takeback_shipments.shipment_id', function($query) {
+                $query->selectRaw('MAX(shipment_id)')
+                      ->from('rd_takeback_shipments')
+                      ->groupBy('shipment_id');
+            })
+            ->groupBy('rd_takeback_shipments.shipment_id', 'shipment_information_id', 'shipping_career_id',  'takeback_id', 'total_weight', 'pallet_qty', 'shipment_created_at') // Adding GROUP BY clause
+            ->orderByDesc('rd_takeback_shipments.shipment_id')->with('takebackType')
+            ->get();
         }
         return response()->json($results);
             // Return the paginated search results and pagination links
@@ -249,7 +378,7 @@ class TackbackStoreController extends Controller
     }
     public function shipmentDetail(Request $request){
          $id = $request->get('id');
-         $storesList = RdTakebackShipment::where('shipment_id', $id)->with('brand')->first();
+         $storesList = RdTakebackShipment::where('shipment_id', $id)->with('brand')->with('takebackType')->first();
          $perPage = 5;
          $StorePallet = RdPallet::with('palletPackagingMaterial')->where('shipment_id',  $id)->paginate($perPage);
         //  if($StorePallet && $StorePallet->palletPackagingMaterial->isNotEmpty()){
@@ -341,7 +470,8 @@ class TackbackStoreController extends Controller
             // Add other custom messages here
         ]);
         $StorePalletSingledata = RdPallet::where('pallet_id', $request->storeId)->first();
-        
+        RdPalletPackagingMaterial::where('pallet_id', $request->storeId)->delete();
+        $userId = Auth::id();
         // Combine material type and weight arrays
             $materialData = [];
             if($request->input('material_type') && $request->input('material_weight')){
@@ -358,6 +488,10 @@ class TackbackStoreController extends Controller
                             'pallet_id'=>$request->storeId,
                             'material_type' => $type,
                             'material_weight' => $weight,
+                            'approved_status'=> 0,
+                            'added_by'=> $userId,
+                            'updated_by'=> $userId,
+                            'approved_by'=> $userId,
                         ]);
                     }
             }
@@ -365,7 +499,7 @@ class TackbackStoreController extends Controller
             $materialDataJson = json_encode($materialData);
             $StorePallet = RdPallet::findOrFail($request->storeId);
             // $StorePallet->pallet_packaging_material = $materialDataJson;
-            $StorePallet->box_quantity  = $request->boxboxQuantity;
+            $StorePallet->box_count  = $request->boxboxQuantity;
             $StorePallet->status  = 1;
                 // Save the StoreBox
                 $StorePallet->save();
@@ -374,13 +508,14 @@ class TackbackStoreController extends Controller
 
             for ($i = 0; $i < $request->boxboxQuantity; $i++) {
                 $uniqueID = RdBox::create([
-                    'box_gen_code' => uniqid(),
+                    'box_code' => uniqid(),
                     'shipment_id' => $StorePalletSingledata->shipment_id,
                     'pallet_id'=>$StorePalletSingledata->pallet_id,
                     'status' => 0,
-                    'pallet_gen_code' => $StorePalletSingledata->pallet_gen_code,
                     'brand_id' => $StorePalletSingledata->brand_id,
-                    'box_created_at' => Carbon::now(),
+                    'created_at' => Carbon::now(),
+                    'added_by'=> $userId,
+                    'updated_by'=> $userId,
                 ]);
             }
 
@@ -466,7 +601,7 @@ class TackbackStoreController extends Controller
         $StorePalletSingledata = RdBox::where('box_id', $request->get('id'))->first();
         $StorePallet = RdPallet::where('pallet_id',  $StorePalletSingledata->pallet_id)->first();
         // echo $StorePallet; die('ok');
-        $storesList = RdTakebackShipment::where('shipment_id', $StorePallet->shipment_id)->with('brand')->first();
+        $storesList = RdTakebackShipment::where('shipment_id', $StorePallet->shipment_id)->with('brand')->with('takebackType')->first();
         $storeBoxList = RdBox::where('pallet_id',  $StorePalletSingledata->pallet_id)->get();
         $productBoxList = RdProduct::where('box_id', $request->get('id'))->get();
         return view('admin.stores.tackbackStoreBoxDetail', ['StorePallet' => $StorePallet,
@@ -494,12 +629,16 @@ class TackbackStoreController extends Controller
         $boxProduct->pallet_id = $request->pallet_id;
         $boxProduct->box_id  = $request->box_id;
         $boxProduct->shipment_id = $request->shipment_id;
-        $boxProduct->product_name = $request->product_name;
+        $boxProduct->product_type = $request->product_name;
         $boxProduct->product_weight = $request->product_weight;
         $boxProduct->product_quantity = $request->product_quantity;
         $boxProduct->product_tier = $request->product_tier;
         $boxProduct->good_resale_condition = $resaleCondition;
         $boxProduct->brand_id = $request->brand_id;
+
+        $boxProduct->added_by = $request->brand_id;
+        $boxProduct->updated_by = $request->brand_id;
+
         // Save the box product
         $boxProduct->save();
         // $box = RdBox::findOrFail($request->box_id);
@@ -525,7 +664,7 @@ class TackbackStoreController extends Controller
         $box->update([
             'box_weight' => $request->box_weight,
             'product_category' => $request->product_category,
-            'pre_consumer' => $pre_consumers,
+            'consumer' => $pre_consumers,
             'status'=>1,
             'shipment_id' => $PalletSingledata->shipment_id,
             'pallet_id' => $PalletSingledata->pallet_id,
@@ -534,6 +673,7 @@ class TackbackStoreController extends Controller
         // Output the box ID
         $BoxId = $box->box_id;
         
+        $userId = Auth::id();
         $materialData = [];
         RdBoxPackagingMaterial::where('box_id', $BoxId)->delete();
         if($request->input('material_type1') && $request->input('material_weight1')){
@@ -557,6 +697,11 @@ class TackbackStoreController extends Controller
                                 'box_id' => $BoxId,
                                 'material_type' => $type,
                                 'material_weight' => $weight,
+                                'added_by'=> $userId,
+                                'updated_by' => $userId,
+                                'approved_by' => 0,
+                                'approved_status'=>0,
+                                'brand_id' =>$PalletSingledata->brand_id
                             ]
                         );
                     }

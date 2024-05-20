@@ -27,40 +27,27 @@
                     <div class="p-3">
                         <div class="row">
                             <label for="exampleFormControlInput1" class="form-label">Tackback Type</label>
-                            <div class="col-md-2">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="trackback_type_store_customer_warehouse" value="Warehouse Bulk" id="flexRadioDefault1" {{ isset($prevois_store_data['trackback_type_store_customer_warehouse']) &&$prevois_store_data['trackback_type_store_customer_warehouse'] === 'Warehouse Bulk' ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="flexRadioDefault1">
-                                        Warehouse Bulk
-                                    </label>
-                                </div>
-                                @error('trackback_type_store_customer_warehouse')
+                            <div class="col-md-6">
+                                @foreach($takebackTypes as $takebackType)
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="takeback_id" value="{{ $takebackType->takeback_id }}" id="takeback_type_{{ $takebackType->takeback_id }}" {{ isset($prevois_store_data['takeback_id']) && $prevois_store_data['takeback_id'] == $takebackType->takeback_id ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="takeback_type_{{ $takebackType->takeback_id }}">
+                                            {{ $takebackType->takeback_name }}
+                                        </label>
+                                    </div>
+                                @endforeach
+                                @error('takeback_id')
                                     <span class="alert text-danger create-error-required-msg">{{ $message }}</span>
-                                 @enderror
-                            </div>
-                            <div class="col-md-2">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="trackback_type_store_customer_warehouse" value="Customer" id="flexRadioDefault1" {{ isset($prevois_store_data['trackback_type_store_customer_warehouse']) &&$prevois_store_data['trackback_type_store_customer_warehouse'] === 'Customer' ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="flexRadioDefault1">
-                                        Customer
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="trackback_type_store_customer_warehouse" value="Store" id="flexRadioDefault1" {{ isset($prevois_store_data['trackback_type_store_customer_warehouse']) && $prevois_store_data['trackback_type_store_customer_warehouse'] === 'Store' ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="flexRadioDefault1">
-                                        Store
-                                    </label>
-                                </div>
+                                @enderror
                             </div>
                             <div class="col-md-3">
                                 <div class="form-check form-switch">
-                                    <input class="form-check-input" name="asn" type="checkbox"  {{ isset($prevois_store_data['asn']) && $prevois_store_data['asn']  ? 'checked' : '' }}>
+                                    <input class="form-check-input" name="is_asn" type="checkbox"  {{ isset($prevois_store_data['is_asn']) && $prevois_store_data['is_asn']  ? 'checked' : '' }}>
                                     <label class="form-check-label" for="flexSwitchCheckDefault">ASN</label>
                                 </div>
                             </div>
                         </div>
+
                     </div>
                     <div class="p-4">
                         <div class="row">
@@ -102,31 +89,45 @@
                                  @enderror
                             </div>
                             <div class="col-md-2">
+                                <label for="shipping_carrier" class="form-label">Shipping Carrier Name</label>
+                                <select class="form-select" name="shipping_carrier_name" aria-label="Default select example">
+                                    <option value="">Select Carrier Name</option>
+                                    @foreach($shippingCarrierTypes as $carrier)
+                                        <option value="{{ $carrier->shipping_career_id }}" {{ isset($prevois_store_data['shipping_career_id']) && $prevois_store_data['shipping_career_id'] == $carrier->shipping_career_id ? 'selected' : '' }}>
+                                            {{ $carrier->shipping_name  }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('shipping_carrier')
+                                    <span class="alert text-danger create-error-required-msg">{{ $message }}</span>
+                                @enderror
+                            </div>
+                            {{-- <div class="col-md-2">
                                 <label for="exampleFormControlInput1"  class="form-label">Shipping Carrier Name</label>
                                 <input type="text" class="form-control" placeholder="Name" value="{{ $prevois_store_data['shipping_carrier_name'] ?? '' }}" name="shipping_carrier_name" id="exampleFormControlInput1">
                                 @error('shipping_carrier_name')
                                     <span class="alert text-danger create-error-required-msg">{{ $message }}</span>
                                  @enderror
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                     <div class="p-4">
                         <div class="row">
                             <div class="col-md-2">
                                 <label for="exampleFormControlInput1" class="form-label">Type (pallet/Box)</label>
-                                <select class="form-select" name="box_type" aria-label="Default select example">
+                                <select class="form-select" name="shipment_type" aria-label="Default select example">
                                 <option value=""selected>Select</option>
-                                    <option value="pallet" {{ old('box_type', $prevois_store_data['box_type'] ?? '') == 'pallet' ? 'selected' : '' }}>Pallet</option>
-                                    <option value="box" {{ old('box_type', $prevois_store_data['box_type'] ?? '') == 'box' ? 'selected' : '' }}>Box</option>
+                                    <option value="pallet" {{ old('shipment_type', $prevois_store_data['shipment_type'] ?? '') == 'pallet' ? 'selected' : '' }}>Pallet</option>
+                                    <option value="box" {{ old('shipment_type', $prevois_store_data['shipment_type'] ?? '') == 'box' ? 'selected' : '' }}>Box</option>
                                 </select>
-                                @error('box_type')
+                                @error('shipment_type')
                                     <span class="alert text-danger create-error-required-msg">{{ $message }}</span>
                                  @enderror
                             </div>
                             <div class="col-md-2">
                                 <label for="exampleFormControlInput1"  class="form-label">Quantity</label>
-                                <input type="text" class="form-control" placeholder="Quantity" value="{{ old('quantity', $prevois_store_data['quantity'] ?? '') }}"  name="quantity" id="exampleFormControlInput1">
-                                 @error('quantity')
+                                <input type="text" class="form-control" placeholder="Quantity" value="{{ old('pallet_qty', $prevois_store_data['pallet_qty'] ?? '') }}"  name="pallet_qty" id="exampleFormControlInput1">
+                                 @error('pallet_qty')
                                 <span class="alert text-danger create-error-required-msg">{{ $message }}</span>
                                 @enderror
                             </div>

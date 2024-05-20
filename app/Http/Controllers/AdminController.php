@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Brand;
 use App\Models\TrackbackProduct;
+use App\Models\Translation;
 
 class AdminController extends Controller
 {
@@ -51,5 +52,10 @@ class AdminController extends Controller
         // other fields
         ]);
         return redirect()->back()->with('success', 'tracback product created successfully!');
+    }
+
+    public function getUserList(Request $request){
+         $users = User::all();
+        return view('admin/datatable', compact('users'));
     }
 }

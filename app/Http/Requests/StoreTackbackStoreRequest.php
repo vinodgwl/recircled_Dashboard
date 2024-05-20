@@ -22,25 +22,24 @@ class StoreTackbackStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'quantity' => 'required|integer|min:1',
+           
+
+            'pallet_qty' => 'required|integer|min:1',
             'total_weight' => 'required|integer|min:1',
-            'trackback_type_store_customer_warehouse' => 'required', // Add validation for Tackback Type
+            'takeback_id' => 'required',
             'brand_id' => 'required',
-            'shipment_id' => 'required',
+            'shipment_information_id' => 'required|unique:rd_takeback_shipments,shipment_information_id',
             'shipping_origin_zipcode' => 'required',
             'shipping_carrier' => 'required',
-            'shipping_carrier_name' => 'required', // Add validation for Shipping Carrier Name
-            'box_type' => 'required',
-            'pallet_weight' => 'required',
-            'box_weight'=>'required',
+            'shipping_carrier_name' => 'required',
+            'shipment_type' => 'required',
         ];
     }
 
     public function messages()
     {
         return [
-            'trackback_type_store_customer_warehouse.required' => 'The Tackback Type field is required.',
-            
+            'takeback_id.required' => 'The Tackback Type field is required.',
             // other custom messages...
         ];
     }

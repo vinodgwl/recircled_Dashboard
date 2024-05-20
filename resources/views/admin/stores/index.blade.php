@@ -25,7 +25,7 @@
                         <div class="row">
                             <div class="col-md-3">
                                <label class="form-check-label" for="flexRadioDefault1">Tackback Type:</label>
-                               <span class="fw-bold">{{$latestStoreDetail->trackback_type_store_customer_warehouse}}</span>
+                               <span class="fw-bold">{{$latestStoreDetail->takebackType->takeback_name}}</span>
                             </div>
                             <div class="col-md-2">
                                 <label class="form-check-label" for="flexRadioDefault1">Parent Brand:</label>
@@ -37,7 +37,7 @@
                             </div>
                              <div class="col-md-2">
                                 <label class="form-check-label" for="flexRadioDefault1">Pallet Quantity</label>
-                                <span class="fw-bold">{{$latestStoreDetail->quantity}}</span>
+                                <span class="fw-bold">{{$latestStoreDetail->pallet_qty}}</span>
                             </div>
                             <div class="col-md-2">
                                 <label class="form-check-label" for="flexRadioDefault1">Total Weight</label>
@@ -74,7 +74,7 @@
                  @foreach ($stores as $store)
                     <tr>
                         <td>{{ $serial }}</td>
-                        <td>{{ $store->pallet_gen_code }}</td>
+                        <td>{{ $store->pallet_code }}</td>
                         <td><div class="col-md-6">
                                 <select class="form-select" name="sub_brand[]" aria-label="Default select example">
                                     <option value="">N/A</option>

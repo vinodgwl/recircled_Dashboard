@@ -12,12 +12,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('rd_box_packaging_material', function (Blueprint $table) {
-            $table->id();
-            $table->bigInteger('shipment_id')->unsigned();
+            $table->bigIncrements('box_packaging_id');
+            $table->bigInteger('brand_id')->unsigned();
+            $table->string('shipment_id');
             $table->bigInteger('pallet_id')->unsigned();
             $table->bigInteger('box_id')->unsigned();
             $table->string('material_type')->nullable();
-            $table->decimal('material_weight', 10, 2)->nullable();
+            $table->decimal('material_weight', 10, 2)->default(0);
+            $table->bigInteger('added_by')->unsigned();
+            $table->bigInteger('updated_by')->unsigned();
+            $table->string('approved_status');
+            $table->bigInteger('approved_by')->unsigned();
             $table->timestamps();
             
             // Define foreign key constraint

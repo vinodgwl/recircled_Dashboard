@@ -87,9 +87,9 @@
                     <tr>
                         <td>{{ $store->shipment_information_id }}</td>
                         <td>{{ \Carbon\Carbon::parse($store->shipment_created_at)->format('d/m/y h:i:s A') }}</td>
-                        <td>{{ $store->trackback_type_store_customer_warehouse }}</td>
+                        <td>{{ $store->takebackType->takeback_name }}</td>
                          <td>{{$store->total_weight}}</td>
-                         <td>{{$store->status_1_count}}/ {{$store->quantity}}</td>
+                         <td>{{$store->status_1_count}}/ {{$store->pallet_qty}}</td>
                          {{-- <td>{{ $store->status_1_count + $store->status_0_count }} ({{$store->status_1_count}}/{{ $store->status_1_count + $store->status_0_count }})</td> --}}
                        {{-- <td style="color: {{ $store->status == 0 ? 'red' : 'black' }}">
                             @if ($store->status == 0)

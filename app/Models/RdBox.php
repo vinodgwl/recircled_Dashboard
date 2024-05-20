@@ -13,18 +13,18 @@ class RdBox extends Model
     protected $primaryKey = 'box_id';
 
     protected $fillable = [
-        'pallet_id',
-        'shipment_id',
-        'box_gen_code',
-        'pallet_gen_code',
         'brand_id',
+        'shipment_id',
+        'pallet_id',
+        'box_code',
         'box_weight',
         'product_category',
-        'pre_consumer',
-        'box_created_at',
+        'consumer',
         'status',
-        'reviewd_by',
-        'reviewe_by_manager',
+        'added_by',
+        'updated_by',
+        'approved_status',
+        'approved_by'
     ];
 
     /**

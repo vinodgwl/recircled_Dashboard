@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class RdPalletPackagingMaterial extends Model
 {
     use HasFactory;
+    protected $primaryKey = 'packaging_material_id';
     protected $table = 'rd_pallet_packaging_material';
 
      protected $fillable = [
@@ -15,6 +16,10 @@ class RdPalletPackagingMaterial extends Model
         'pallet_id',
         'material_type',
         'material_weight',
+        'approved_status',
+        'added_by',
+        'updated_by',
+        'approved_by'
     ];
     
     // Define relationships

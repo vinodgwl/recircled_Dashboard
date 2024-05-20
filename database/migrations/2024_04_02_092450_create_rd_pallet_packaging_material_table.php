@@ -12,13 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('rd_pallet_packaging_material', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('shipment_id');
-            $table->unsignedBigInteger('pallet_id');
-            $table->string('material_type', 200)->nullable();
-            $table->decimal('material_weight', 10, 2)->nullable();
+           $table->bigIncrements('packaging_material_id');
+            $table->string('shipment_id');
+            $table->bigInteger('pallet_id')->unsigned();
+            $table->string('material_type')->nullable();
+            $table->decimal('material_weight', 10, 2)->default(0);
+            $table->string('approved_status');
+            $table->bigInteger('added_by')->unsigned();
+            $table->bigInteger('updated_by')->unsigned();
+            $table->bigInteger('approved_by');
             $table->timestamps();
-
             $table->foreign('pallet_id')->references('pallet_id')->on('rd_pallets')->onDelete('cascade');
         });
     }

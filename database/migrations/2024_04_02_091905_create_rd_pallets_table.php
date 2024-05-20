@@ -12,17 +12,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('rd_pallets', function (Blueprint $table) {
-           $table->id('pallet_id');
-            $table->unsignedBigInteger('shipment_id');
-            $table->string('pallet_gen_code', 255)->unique();
-            $table->unsignedBigInteger('brand_id');
-            $table->string('sub_brand', 200)->nullable();
+           $table->bigIncrements('pallet_id');
+            $table->bigInteger('shipment_id')->unsigned();
+            $table->bigInteger('brand_id')->unsigned();
+            $table->string('pallet_code', 255);
             $table->decimal('pallet_weight', 10, 2)->nullable();
-            $table->integer('box_quantity')->default(0);
+            $table->integer('box_count')->default(0);
             $table->timestamp('pallet_created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
-            $table->tinyInteger('status')->default(0)->comment('0 for Unopened and 1 for open');
-            $table->string('reviewd_by', 255)->nullable();
-            $table->boolean('reviewe_by_manager')->default(false);
+            $table->tinyInteger('approved_status')->default(0);
+            $table->bigInteger('approved_by');
+            $table->bigInteger('added_by')->unsigned();
+            $table->bigInteger('updated_by')->unsigned();
+            $table->tinyInteger('status')->default(0);
             $table->timestamps();
             $table->foreign('shipment_id')->references('shipment_id')->on('rd_takeback_shipments')->onDelete('cascade');
         });

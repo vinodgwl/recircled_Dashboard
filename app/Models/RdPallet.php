@@ -13,15 +13,15 @@ class RdPallet extends Model
     use HasFactory;
     protected $fillable = [
         'shipment_id',
-        'pallet_gen_code',
+        'pallet_code',
         'brand_id',
-        'sub_brand',
         'pallet_weight',
-        'box_quantity',
+        'box_count',
         'pallet_created_at',
-        'status',
-        'reviewd_by',
-        'reviewe_by_manager',
+        'approved_status',
+        'approved_by',
+        'added_by',
+        'updated_by',
     ];
 
      protected $dates = [

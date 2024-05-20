@@ -12,21 +12,27 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('rd_takeback_shipments', function (Blueprint $table) {
-            $table->id('shipment_id');
-            $table->string('trackback_type_store_customer_warehouse', 100)->nullable();
-            $table->tinyInteger('asn')->default(0);
-            $table->unsignedBigInteger('brand_id');
-            $table->text('shipment_information_id')->nullable();
+            $table->bigIncrements('shipment_id');
+            $table->string('takeback_id')->nullable();
+            $table->tinyInteger('is_asn')->nullable()->default(0);
+            $table->bigInteger('asn_id');
+            $table->bigInteger('brand_id');
+            $table->text('shipment_information_id');
             $table->string('shipping_origin_zipcode', 150)->nullable();
             $table->string('shipping_carrier', 200)->nullable();
-            $table->string('shipping_carrier_name', 200)->nullable();
-            $table->string('box_type', 200)->nullable();
-            $table->integer('quantity')->default(0);
-            $table->string('total_weight', 150)->nullable();
-            $table->tinyInteger('status')->default(0)->comment('0 for Unopened and 1 for open');
-            $table->string('reviewd_by', 150)->nullable();
-            $table->boolean('reviewe_by_manager')->default(false)->comment('1 for approved 0 for not approve');
-            $table->timestamp('shipment_created_at')->nullable()->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->bigInteger('shipping_career_id')->nullable();
+            $table->string('shipment_type', 200)->nullable();
+            $table->integer('pallet_qty')->default(0);
+            $table->string('total_weight', 200);
+            $table->string('shipment_tracking_code', 255);
+            $table->string('shipment_tracking_URL', 255);
+            $table->bigInteger('added_by')->unsigned();
+            $table->bigInteger('updated_by')->unsigned();
+            $table->tinyInteger('status')->default(0);
+            $table->tinyInteger('approved_status')->default(0);
+            $table->bigInteger('approved_by');
+            $table->dateTime('shipment_created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->dateTime('shipment_updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
         });
     }
 

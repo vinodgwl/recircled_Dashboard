@@ -12,19 +12,19 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('rd_boxes', function (Blueprint $table) {
-            $table->id('box_id');
-            $table->unsignedBigInteger('pallet_id');
-            $table->unsignedBigInteger('shipment_id');
-            $table->string('box_gen_code')->unique();
-            $table->string('pallet_gen_code');
-            $table->unsignedBigInteger('brand_id');
+            $table->bigIncrements('box_id');
+            $table->bigInteger('brand_id')->unsigned();
+            $table->bigInteger('shipment_id')->unsigned()->nullable();
+            $table->bigInteger('pallet_id')->unsigned();
+            $table->string('box_code');
             $table->decimal('box_weight', 10, 2)->default(0);
-            $table->string('product_category', 150)->default(0);
-            $table->tinyInteger('pre_consumer')->default(0);
-            $table->timestamp('box_created_at')->useCurrent();
-            $table->tinyInteger('status')->default(0)->comment('Status of the box (0: Unopened, 1: Opened)');
-            $table->string('reviewd_by')->nullable()->comment('Name of the reviewer');
-            $table->boolean('reviewe_by_manager')->default(false)->comment('Indicates whether reviewed by manager');
+            $table->string('product_category')->nullable();
+            $table->string('consumer')->default('0'); // Changed column name to 'consumer' as 'Post/Pre' is not recommended
+            $table->tinyInteger('status')->default(0); // Changed column name to 'status'
+            $table->bigInteger('added_by')->unsigned();
+            $table->bigInteger('updated_by')->unsigned();
+            $table->string('approved_status')->nullable();
+            $table->tinyInteger('approved_by')->default(0);
             $table->timestamps();
             
             // Foreign key constraint
